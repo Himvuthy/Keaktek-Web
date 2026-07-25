@@ -11,6 +11,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import ContentTab from '../components/ContentTab';
 import Skeleton from '../components/Skeleton';
 export default function AdminDashboard() {
+    const getAvatarUrl = (url) => {
+        if (!url) return import.meta.env.BASE_URL + 'avatars/avatar-1.svg';
+        if (url.startsWith('http')) return url;
+        if (url.startsWith('/')) return import.meta.env.BASE_URL + url.slice(1);
+        return import.meta.env.BASE_URL + url;
+    };
+
     const queryClient = useQueryClient();
 
     const [isDark, setIsDark] = useState(false);
@@ -755,7 +762,7 @@ useEffect(() => {
                                             {dashboardStats.topStudents[1] && (
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '30%' }}>
                                                     <div style={{fontSize: '11px', fontWeight: 'bold', color: '#a0a0a0', marginBottom: '4px'}}>{dashboardStats.topStudents[1].xp || 0} XP</div>
-                                                    <img src={dashboardStats.topStudents[1].profilepictureurl || `https://ui-avatars.com/api/?name=${dashboardStats.topStudents[1].firstname}+${dashboardStats.topStudents[1].lastname}`} style={{width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', marginBottom: '8px', border: '3px solid #c0c0c0'}}/>
+                                                    <img src={getAvatarUrl(dashboardStats.topStudents[1].profilepictureurl) || `https://ui-avatars.com/api/?name=${dashboardStats.topStudents[1].firstname}+${dashboardStats.topStudents[1].lastname}`} style={{width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', marginBottom: '8px', border: '3px solid #c0c0c0'}}/>
                                                     <div style={{fontWeight: 'bold', fontSize: '14px', textAlign: 'center', width: '100%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{dashboardStats.topStudents[1].firstname}</div>
                                                     <div style={{fontSize: '12px', color: '#ff9800', fontWeight: 'bold'}}>🔥 {dashboardStats.topStudents[1].currentstreak || 0}</div>
                                                     <div style={{ width: '100%', height: '90px', background: 'rgba(192, 192, 192, 0.4)', borderTopLeftRadius: '10px', borderTopRightRadius: '10px', display: 'flex', justifyContent: 'center', paddingTop: '10px', fontSize: '24px', fontWeight: 'bold', color: '#fff', marginTop: '10px' }}>2</div>
@@ -766,7 +773,7 @@ useEffect(() => {
                                             {dashboardStats.topStudents[0] && (
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '35%' }}>
                                                     <div style={{fontSize: '12px', fontWeight: 'bold', color: '#d4af37', marginBottom: '4px'}}>{dashboardStats.topStudents[0].xp || 0} XP</div>
-                                                    <img src={dashboardStats.topStudents[0].profilepictureurl || `https://ui-avatars.com/api/?name=${dashboardStats.topStudents[0].firstname}+${dashboardStats.topStudents[0].lastname}`} style={{width: '65px', height: '65px', borderRadius: '50%', objectFit: 'cover', marginBottom: '8px', border: '3px solid #ffd700'}}/>
+                                                    <img src={getAvatarUrl(dashboardStats.topStudents[0].profilepictureurl) || `https://ui-avatars.com/api/?name=${dashboardStats.topStudents[0].firstname}+${dashboardStats.topStudents[0].lastname}`} style={{width: '65px', height: '65px', borderRadius: '50%', objectFit: 'cover', marginBottom: '8px', border: '3px solid #ffd700'}}/>
                                                     <div style={{fontWeight: 'bold', fontSize: '16px', textAlign: 'center', width: '100%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{dashboardStats.topStudents[0].firstname}</div>
                                                     <div style={{fontSize: '14px', color: '#ff9800', fontWeight: 'bold'}}>🔥 {dashboardStats.topStudents[0].currentstreak || 0}</div>
                                                     <div style={{ width: '100%', height: '130px', background: 'rgba(255, 215, 0, 0.4)', borderTopLeftRadius: '10px', borderTopRightRadius: '10px', display: 'flex', justifyContent: 'center', paddingTop: '10px', fontSize: '32px', fontWeight: 'bold', color: '#fff', marginTop: '10px' }}>1</div>
@@ -777,7 +784,7 @@ useEffect(() => {
                                             {dashboardStats.topStudents[2] && (
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '30%' }}>
                                                     <div style={{fontSize: '11px', fontWeight: 'bold', color: '#cd7f32', marginBottom: '4px'}}>{dashboardStats.topStudents[2].xp || 0} XP</div>
-                                                    <img src={dashboardStats.topStudents[2].profilepictureurl || `https://ui-avatars.com/api/?name=${dashboardStats.topStudents[2].firstname}+${dashboardStats.topStudents[2].lastname}`} style={{width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', marginBottom: '8px', border: '3px solid #cd7f32'}}/>
+                                                    <img src={getAvatarUrl(dashboardStats.topStudents[2].profilepictureurl) || `https://ui-avatars.com/api/?name=${dashboardStats.topStudents[2].firstname}+${dashboardStats.topStudents[2].lastname}`} style={{width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', marginBottom: '8px', border: '3px solid #cd7f32'}}/>
                                                     <div style={{fontWeight: 'bold', fontSize: '14px', textAlign: 'center', width: '100%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{dashboardStats.topStudents[2].firstname}</div>
                                                     <div style={{fontSize: '12px', color: '#ff9800', fontWeight: 'bold'}}>🔥 {dashboardStats.topStudents[2].currentstreak || 0}</div>
                                                     <div style={{ width: '100%', height: '60px', background: 'rgba(205, 127, 50, 0.4)', borderTopLeftRadius: '10px', borderTopRightRadius: '10px', display: 'flex', justifyContent: 'center', paddingTop: '10px', fontSize: '24px', fontWeight: 'bold', color: '#fff', marginTop: '10px' }}>3</div>
@@ -795,7 +802,7 @@ useEffect(() => {
                                                     <div style={{fontSize: '14px', fontWeight: 'bold', color: '#888', width: '25px', textAlign: 'center'}}>
                                                         {index + 4}
                                                     </div>
-                                                    <img src={student.profilepictureurl || `https://ui-avatars.com/api/?name=${student.firstname}+${student.lastname}`} 
+                                                    <img src={getAvatarUrl(student.profilepictureurl) || `https://ui-avatars.com/api/?name=${student.firstname}+${student.lastname}`} 
                                                          style={{width: '35px', height: '35px', borderRadius: '50%', objectFit: 'cover'}}/>
                                                     <div style={{ flex: 1 }}>
                                                         <div style={{fontWeight: '600', fontSize: '14px'}}>{student.firstname} {student.lastname}</div>
@@ -828,7 +835,7 @@ useEffect(() => {
                                         ) : (Array.isArray(recentRegistrations) ? recentRegistrations : []).slice(0, 4).map(u => (
                                             <tr key={u.uid}>
                                                 <td style={{display:'flex', alignItems:'center', gap:'8px'}}>
-                                                    <img src={u.profilepictureurl || `https://ui-avatars.com/api/?name=${u.firstname}+${u.lastname}`} style={{width:'24px', height:'24px', borderRadius:'50%', objectFit:'cover'}}/> 
+                                                    <img src={getAvatarUrl(u.profilepictureurl) || `https://ui-avatars.com/api/?name=${u.firstname}+${u.lastname}`} style={{width:'24px', height:'24px', borderRadius:'50%', objectFit:'cover'}}/> 
                                                     {u.firstname} {u.lastname}
                                                 </td>
                                                 <td>{u.rolename}</td>
@@ -1076,7 +1083,7 @@ useEffect(() => {
                                             className={`${styles.childAvatarBtn} ${selectedChildId === child.uid ? styles.active : ''}`}
                                             onClick={() => setSelectedChildId(child.uid)}
                                         >
-                                            <img src={child.profilepictureurl || '/avatars/avatar-1.svg'} alt={child.firstname} className={styles.childAvatarImg} />
+                                            <img src={getAvatarUrl(child.profilepictureurl)} alt={child.firstname} className={styles.childAvatarImg} />
                                             <span className={styles.childAvatarName}>{child.firstname}</span>
                                         </button>
                                     ))}
@@ -1096,7 +1103,7 @@ useEffect(() => {
                                             {/* Large Profile Card */}
                                             <div className={`${styles.premiumCard} ${styles.profileCard}`}>
                                                 <div className={styles.premiumProfileInfo}>
-                                                    <img src={child.profilepictureurl || '/avatars/avatar-1.svg'} alt="Profile" className={styles.profileAvatar} />
+                                                    <img src={getAvatarUrl(child.profilepictureurl)} alt="Profile" className={styles.profileAvatar} />
                                                     <div className={styles.profileDetails}>
                                                         <h2>{child.firstname} {child.lastname}</h2>
                                                         <p>@{child.username}</p>
@@ -2092,7 +2099,7 @@ useEffect(() => {
 
                 <div className={styles.sidebarFooter} ref={profilePopupRef}>
                     {user?.profilePictureURL ? (
-                        <img src={user.profilePictureURL} alt="" className={styles.profilePic} style={{ objectFit: 'cover' }} />
+                                <img src={getAvatarUrl(user.profilePictureURL)} alt="" className={styles.profilePic} style={{ objectFit: 'cover' }} />
                     ) : (
                         <div className={styles.profilePic}></div>
                     )}
@@ -2173,7 +2180,7 @@ useEffect(() => {
                         <div style={{ marginLeft: '15px', display: 'flex', alignItems: 'center' }}>
                             {user?.profilePictureURL ? (
                                 <img 
-                                    src={user.profilePictureURL} 
+                                    src={getAvatarUrl(user.profilePictureURL)} 
                                     alt="Profile" 
                                     style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(255,255,255,0.1)' }} 
                                 />
