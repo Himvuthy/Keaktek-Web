@@ -6,6 +6,9 @@
 
 /* ---------- Design Tokens ---------- */
 :root {
+    /* Background Image */
+    --bg-image: url('../assets/app-bg.png');
+
     /* Colors - Light Mode */
     --bg-primary: #f0f4ff;
     --bg-secondary: #ffffff;
@@ -81,6 +84,7 @@
 
 /* ---------- Dark Mode Tokens ---------- */
 body.dark-mode {
+    --bg-image: none;
     --bg-primary: #0f172a;
     --bg-secondary: #1e293b;
     --bg-card: rgba(30, 41, 59, 0.75);
@@ -137,11 +141,16 @@ html {
 
 body {
     font-family: var(--font-body);
-    background: var(--bg-primary);
+    background-color: var(--bg-primary);
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
-    transition: background var(--transition-base), color var(--transition-base);
+    transition: background-color var(--transition-base), color var(--transition-base);
 }
 
 a {
