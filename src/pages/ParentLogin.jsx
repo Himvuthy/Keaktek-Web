@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import logoLight from '../assets/logo.png';
+import logoDark from '../assets/logo-dark.png';
+import loginBgLight from '../assets/login-bg.png';
+import loginBgDark from '../assets/login-bg-dark.png';
 
 import styles from './Login.module.css';
 
@@ -72,10 +76,10 @@ export default function ParentLogin() {
         <div className={styles.loginWrapper}>
             <div className={styles.websiteCanvas}>
                 <div className={styles.leftPanel}>
-                    <img src={isDark ? "/login-bg-dark.png" : "/login-bg.png"} alt="" className={styles.bgImage} />
+                    <img src={isDark ? loginBgDark : loginBgLight} alt="" className={styles.bgImage} />
                     
                     {/* Dynamic Logo */}
-                    <img src={isDark ? "/logo-dark.png" : "/logo.png"} alt="Keaktek Logo" className={styles.uploadedLogo} />
+                    <img src={isDark ? logoDark : logoLight} alt="Keaktek Logo" className={styles.uploadedLogo} />
                     
                     <button 
                         onClick={toggleTheme}

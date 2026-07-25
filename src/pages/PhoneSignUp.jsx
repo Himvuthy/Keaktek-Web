@@ -5,6 +5,10 @@ import WaveBackground from '../components/WaveBackground';
 import { auth } from '../firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import styles from './PhoneSignUp.module.css';
+import logoLight from '../assets/logo.png';
+import logoDark from '../assets/logo-dark.png';
+import loginBgLight from '../assets/login-bg.png';
+import loginBgDark from '../assets/login-bg-dark.png';
 
 export default function PhoneSignUp() {
     const [isDark, setIsDark] = useState(false);
@@ -173,7 +177,7 @@ export default function PhoneSignUp() {
                     <WaveBackground className={styles.bgCanvas} isDark={isDark} />
                     
                     {/* Dynamic Logo */}
-                    <img src={isDark ? "/logo-dark.png" : "/logo.png"} alt="Keaktek Logo" className={styles.uploadedLogo} />
+                    <img src={isDark ? logoDark : logoLight} alt="Keaktek Logo" className={styles.uploadedLogo} />
                     
                     <button 
                         onClick={toggleTheme}
