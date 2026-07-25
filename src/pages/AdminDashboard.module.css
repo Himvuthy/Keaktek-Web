@@ -723,6 +723,7 @@
     transform: translateY(10px);
     transition: all 0.2s ease;
     z-index: 100;
+    background-color: rgba(245, 245, 245, 0.95) !important;
 }
 
 .profilePopup.show {
@@ -743,6 +744,12 @@
     transform: translateY(-10px);
     transition: all 0.2s ease;
     z-index: 2000;
+    background-color: rgba(245, 245, 245, 0.95) !important;
+}
+
+:global(body.dark-theme) .notificationPopup,
+:global(body.dark-theme) .profilePopup {
+    background-color: #1a1a1a !important;
 }
 
 .notificationPopup.show {
