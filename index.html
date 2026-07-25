@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>temp-app</title>
+    <style>
+      body {
+        margin: 0;
+        background-color: #f3f4f6;
+        overflow: hidden;
+      }
+      body.dark-mode, body.dark-theme {
+        background-color: #050505;
+      }
+      .app-skeleton {
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+        box-sizing: border-box;
+      }
+      .skeleton-sidebar {
+        width: 250px;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-right: 1px solid rgba(0,0,0,0.05);
+        padding: 20px;
+      }
+      .skeleton-main {
+        flex: 1;
+        padding: 40px;
+      }
+      .skeleton-pulse {
+        animation: pulse 1.5s infinite ease-in-out;
+        background-color: rgba(0,0,0,0.08);
+        border-radius: 12px;
+        margin-bottom: 20px;
+      }
+      body.dark-mode .skeleton-sidebar {
+        background-color: rgba(255, 255, 255, 0.02);
+        border-right: 1px solid rgba(255,255,255,0.05);
+      }
+      body.dark-mode .skeleton-pulse {
+        background-color: rgba(255,255,255,0.05);
+      }
+      @keyframes pulse {
+        0% { opacity: 0.6; }
+        50% { opacity: 1; }
+        100% { opacity: 0.6; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Prevent theme flicker by applying theme synchronously before React mounts -->
+    <script>
+      (function() {
+        try {
+          var savedTheme = localStorage.getItem('studyapp-theme');
+          if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.body.classList.add('dark-theme');
+          }
+          
+          if (sessionStorage.getItem('hasVisited')) {
+            document.body.classList.add('skip-entrance');
+          } else {
+            sessionStorage.setItem('hasVisited', 'true');
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <div id="root">
+      <div class="app-skeleton">
+        <div class="skeleton-sidebar">
+          <div class="skeleton-pulse" style="height: 40px; width: 80%; margin-bottom: 40px;"></div>
+          <div class="skeleton-pulse" style="height: 20px; width: 100%;"></div>
+          <div class="skeleton-pulse" style="height: 20px; width: 100%;"></div>
+          <div class="skeleton-pulse" style="height: 20px; width: 100%;"></div>
+        </div>
+        <div class="skeleton-main">
+          <div class="skeleton-pulse" style="height: 60px; width: 300px;"></div>
+          <div class="skeleton-pulse" style="height: 200px; width: 100%; border-radius: 20px;"></div>
+          <div style="display: flex; gap: 20px;">
+            <div class="skeleton-pulse" style="height: 150px; flex: 1; border-radius: 20px;"></div>
+            <div class="skeleton-pulse" style="height: 150px; flex: 1; border-radius: 20px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

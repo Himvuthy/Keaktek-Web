@@ -1,0 +1,29 @@
+@import './styles/global.css';
+
+/* Minimal reset for the Vite entrypoint */
+#root {
+  width: 100%;
+  height: 100vh;
+}
+
+/* Disable entrance animations on refresh */
+body.skip-entrance [class*="profileSetupWrapper"],
+body.skip-entrance [class*="loginWrapper"],
+body.skip-entrance [class*="signupWrapper"],
+body.skip-entrance [class*="websiteCanvas"],
+body.skip-entrance [class*="leftPanel"],
+body.skip-entrance [class*="rightPanel"],
+body.skip-entrance [class*="panelWrapper"],
+body.skip-entrance [class*="phoneCard"] {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+/* Recharts Smooth Tooltip & Cursor */
+.recharts-tooltip-wrapper {
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+.recharts-tooltip-cursor {
+    transition: x 0.3s cubic-bezier(0.25, 1, 0.5, 1), y 0.3s cubic-bezier(0.25, 1, 0.5, 1), width 0.3s cubic-bezier(0.25, 1, 0.5, 1), height 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
