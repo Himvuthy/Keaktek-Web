@@ -43,6 +43,8 @@ export default function AdminDashboard() {
     const [invitations, setInvitations] = useState([]);
     const [users, setUsers] = useState([]);
     const [dashboardStats, setDashboardStats] = useState(null);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [yearlyGrowth, setYearlyGrowth] = useState(null);
     const [recentRegistrations, setRecentRegistrations] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [loadingUsers, setLoadingUsers] = useState(false);
@@ -747,16 +749,35 @@ useEffect(() => {
                         {/* Charts Row 1: Growth & Role */}
                         <section className={`${styles.twoColGrid} ${styles.dashboardSection}`}>
                             <div className={styles.glassPanel} style={{padding: '20px'}}>
-                                <div className={styles.sectionTitle}>User Growth Chart</div>
-                                <div className={styles.dateSubtext}>New Users (Last 7 Months)</div>
+                                
+<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                                    <div className={styles.sectionTitle} style={{ margin: 0 }}>User Growth Chart</div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        <button 
+                                            onClick={() => setSelectedYear(y => y - 1)} 
+                                            style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-color)', padding: '5px' }}
+                                        >
+                                            <ChevronRight size={16} style={{ transform: 'rotate(180deg)' }} />
+                                        </button>
+                                        <span style={{ fontWeight: '600', fontSize: '14px' }}>{selectedYear}</span>
+                                        <button 
+                                            onClick={() => setSelectedYear(y => y + 1)} 
+                                            style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-color)', padding: '5px' }}
+                                        >
+                                            <ChevronRight size={16} />
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className={styles.dateSubtext}>New Users (12 Months)</div>
                                 <div className={styles.chartContainer}>
-                                    {dashboardStats?.userGrowth?.map((item, i) => {
-                                        const pct = Math.max((item.count / maxUserGrowth) * 100, 10);
-                                        const isLatest = i === dashboardStats.userGrowth.length - 1;
+                                    {(yearlyGrowth || [])?.map((item, i) => {
+                                        const currentMax = Math.max(...(yearlyGrowth || []).map(g => g.count), 1);
+                                        const pct = Math.max((item.count / currentMax) * 100, 10);
+                                        const isLatest = item.count > 0 && i === new Date().getMonth() && selectedYear === new Date().getFullYear();
                                         return (
                                             <div key={item.month} className={styles.chartBar} style={{height: `${pct}%`, background: isLatest ? '#00a82d' : undefined}}>
                                                 <span className={styles.chartValue}>{item.count >= 1000 ? (item.count/1000).toFixed(1) + 'k' : item.count}</span>
-                                                <span className={styles.chartLabel}>{item.month}</span>
+                                                <span className={styles.chartLabel} style={{fontSize: '11px'}}>{item.month}</span>
                                             </div>
                                         );
                                     })}
