@@ -1343,19 +1343,19 @@ useEffect(() => {
         <div className={`${styles.pageContent} ${activeTab === 'Users' ? (isSwitching ? styles.animateFadeIn : '') : styles.hidden}`} style={{ display: activeTab === 'Users' ? 'flex' : 'none' }}>
             <section className={styles.statsGrid}>
                 <div className={`${styles.statCard} ${styles.glassPanel}`}>
-                    <div className={styles.statHeader}><span>Teachers</span><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"></circle><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path></svg></div>
+                    <div className={styles.statHeader}><span style={{ color: getRoleColor('Teacher') }}>Teachers</span><svg style={{ stroke: getRoleColor('Teacher') }} viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"></circle><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path></svg></div>
                     <div className={styles.statValue}>{users.filter(u => u.rolename === 'Teacher').length}</div>
                 </div>
                 <div className={`${styles.statCard} ${styles.glassPanel}`}>
-                    <div className={styles.statHeader}><span>Students</span><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"></circle><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path></svg></div>
+                    <div className={styles.statHeader}><span style={{ color: getRoleColor('Student') }}>Students</span><svg style={{ stroke: getRoleColor('Student') }} viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"></circle><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path></svg></div>
                     <div className={styles.statValue}>{users.filter(u => u.rolename === 'Student').length}</div>
                 </div>
                 <div className={`${styles.statCard} ${styles.glassPanel}`}>
-                    <div className={styles.statHeader}><span>Admins</span><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"></circle><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path></svg></div>
+                    <div className={styles.statHeader}><span style={{ color: getRoleColor('Admin') }}>Admins</span><svg style={{ stroke: getRoleColor('Admin') }} viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"></circle><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path></svg></div>
                     <div className={styles.statValue}>{users.filter(u => u.rolename === 'Admin').length}</div>
                 </div>
                 <div className={`${styles.statCard} ${styles.glassPanel}`}>
-                    <div className={styles.statHeader}><span>Parents</span><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"></circle><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path></svg></div>
+                    <div className={styles.statHeader}><span style={{ color: getRoleColor('Parent') }}>Parents</span><svg style={{ stroke: getRoleColor('Parent') }} viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"></circle><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path></svg></div>
                     <div className={styles.statValue}>{users.filter(u => u.rolename === 'Parent').length}</div>
                 </div>
             </section>
