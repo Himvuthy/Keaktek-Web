@@ -34,11 +34,8 @@
 
 /* --- REUSABLE PANELS --- */
 .glassPanel {
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
     transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     border-radius: 24px;
 }
@@ -1710,9 +1707,8 @@ select.formInput {
 }
 
 .appearancePanel {
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
     border-radius: 16px;
     padding: 20px;
     margin-top: 20px;
