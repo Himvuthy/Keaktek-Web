@@ -982,6 +982,110 @@
 /* --- STATS GRID --- */
 .statsGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
 .statCard { padding: 25px; display: flex; flex-direction: column; gap: 15px; }
+
+/* --- CUSTOM STAT CARDS --- */
+.statCardUsers,
+.statCardActive,
+.statCardLessons,
+.statCardQuizzes,
+.statCardSessions {
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+:global(body.dark-theme) .statCardUsers,
+:global(body.dark-theme) .statCardActive,
+:global(body.dark-theme) .statCardLessons,
+:global(body.dark-theme) .statCardQuizzes,
+:global(body.dark-theme) .statCardSessions {
+    background-color: #111 !important;
+    border-color: #333 !important;
+}
+
+:global(body.dark-theme) .statCardUsers .statTitle,
+:global(body.dark-theme) .statCardActive .statTitle,
+:global(body.dark-theme) .statCardLessons .statTitle,
+:global(body.dark-theme) .statCardQuizzes .statTitle,
+:global(body.dark-theme) .statCardSessions .statTitle { color: #e2e8f0; }
+
+:global(body.dark-theme) .statCardUsers .statValue,
+:global(body.dark-theme) .statCardActive .statValue,
+:global(body.dark-theme) .statCardLessons .statValue,
+:global(body.dark-theme) .statCardQuizzes .statValue,
+:global(body.dark-theme) .statCardSessions .statValue { color: #ffffff; }
+
+:global(body.dark-theme) .statCardUsers .statIconWrapper,
+:global(body.dark-theme) .statCardActive .statIconWrapper,
+:global(body.dark-theme) .statCardLessons .statIconWrapper,
+:global(body.dark-theme) .statCardQuizzes .statIconWrapper,
+:global(body.dark-theme) .statCardSessions .statIconWrapper { background-color: #222; }
+
+
+.statTitle {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.statIconWrapper {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 1: Users */
+.statCardUsers {
+    background-color: #f1f8fd;
+    border-color: #e0edfe;
+}
+.statCardUsers .statTitle { color: #1e3a8a; }
+.statCardUsers .statValue { color: #0f172a; }
+.statCardUsers .statTrend { color: #22c55e; }
+.statCardUsers .statIconWrapper { background-color: #dbeafe; color: #3b82f6; }
+
+/* 2: Active */
+.statCardActive {
+    background-color: #f1fcf7;
+    border-color: #dcfce7;
+}
+.statCardActive .statTitle { color: #1e3a8a; } /* matching screenshot color */
+.statCardActive .statValue { color: #0f172a; }
+.statCardActive .statTrend { color: #22c55e; }
+.statCardActive .statIconWrapper { background-color: #dcfce7; color: #22c55e; }
+
+/* 3: Lessons */
+.statCardLessons {
+    background-color: #f7f5fe;
+    border-color: #f3e8ff;
+}
+.statCardLessons .statTitle { color: #1e3a8a; }
+.statCardLessons .statValue { color: #0f172a; }
+.statCardLessons .statTrend { color: #8b5cf6; }
+.statCardLessons .statIconWrapper { background-color: #f3e8ff; color: #8b5cf6; }
+
+/* 4: Quizzes */
+.statCardQuizzes {
+    background-color: #fefaf2;
+    border-color: #fef3c7;
+}
+.statCardQuizzes .statTitle { color: #1e3a8a; }
+.statCardQuizzes .statValue { color: #0f172a; }
+.statCardQuizzes .statTrend { color: #f59e0b; }
+.statCardQuizzes .statIconWrapper { background-color: #fef3c7; color: #f59e0b; }
+
+/* 5: Sessions */
+.statCardSessions {
+    background-color: #f1f9fe;
+    border-color: #e0f2fe;
+}
+.statCardSessions .statTitle { color: #1e3a8a; }
+.statCardSessions .statValue { color: #0f172a; }
+.statCardSessions .statTrend { color: #0ea5e9; }
+.statCardSessions .statIconWrapper { background-color: #e0f2fe; color: #0ea5e9; }
+
 .statHeader { display: flex; justify-content: space-between; align-items: center; color: #666; font-weight: bold; font-size: 14px; }
 :global(body.dark-theme) .statHeader { color: #aaa; }
 .statHeader svg { width: 20px; height: 20px; stroke: #5c00ff; stroke-width: 2.5; fill: none; }

@@ -7,7 +7,7 @@ import logoLight from '../assets/logo-light.png';
 import logoDark from '../assets/logo-dark.png';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Clock, GraduationCap, Target, Sparkles, MessageSquare, Activity, ChevronRight, Bell } from 'lucide-react';
+import { Clock, GraduationCap, Target, Sparkles, MessageSquare, Activity, ChevronRight, Bell, Users, BookOpen, FileText, Flame, Circle } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import StudyBackground from '../components/StudyBackground';
 import ContentTab from '../components/ContentTab';
@@ -683,36 +683,67 @@ useEffect(() => {
 
                         {/* 5 Statistic Cards */}
                         <section className={`${styles.fiveColGrid} ${styles.dashboardSection}`}>
-                            <div className={`${styles.statCard} ${styles.glassPanel}`}>
-                                <div className={styles.statHeader}><span>Total Users</span><span>👥</span></div>
+                            {/* Card 1: Total Users */}
+                            <div className={`${styles.statCard} ${styles.statCardUsers}`}>
+                                <div className={styles.statHeader}>
+                                    <span className={styles.statTitle}>Total Users</span>
+                                    <div className={styles.statIconWrapper}><Users size={18} /></div>
+                                </div>
                                 <div className={styles.statValue}>{dashboardStats?.totalUsers?.toLocaleString() || '-'}</div>
-                                <div className={styles.statTrend} style={{color: dashboardStats?.signupChange?.startsWith('-') ? '#ef4444' : '#00a82d'}}>
-                                    {dashboardStats?.signupChange?.startsWith('-') ? '' : '+'}{dashboardStats?.signupChange || '0%'} this month
+                                <div className={styles.statTrend} style={{color: dashboardStats?.signupChange?.startsWith('-') ? '#ef4444' : '#22c55e'}}>
+                                    {dashboardStats?.signupChange?.startsWith('-') ? '↓ ' : '↑ +'}{dashboardStats?.signupChange || '100%'} this month
                                 </div>
                             </div>
-                            <div className={`${styles.statCard} ${styles.glassPanel}`}>
-                                <div className={styles.statHeader}><span>Active Today</span><span>🟢</span></div>
+                            
+                            {/* Card 2: Active Today */}
+                            <div className={`${styles.statCard} ${styles.statCardActive}`}>
+                                <div className={styles.statHeader}>
+                                    <span className={styles.statTitle}>Active Today</span>
+                                    <div className={styles.statIconWrapper}><Circle size={14} fill="currentColor" /></div>
+                                </div>
                                 <div className={styles.statValue}>{dashboardStats?.activeToday?.toLocaleString() || '-'}</div>
-                                <div className={styles.statTrend}>Currently studying</div>
+                                <div className={styles.statTrend}>
+                                    <Circle size={10} fill="currentColor" style={{marginRight: '4px', display: 'inline-block'}} /> Currently studying
+                                </div>
                             </div>
-                            <div className={`${styles.statCard} ${styles.glassPanel}`}>
-                                <div className={styles.statHeader}><span>Lessons Completed</span><span>📚</span></div>
-                                <div className={styles.statValue}>{dashboardStats?.lessonsToday?.toLocaleString() || '-'}</div>
-                                <div className={styles.statTrend}>Today</div>
+                            
+                            {/* Card 3: Lessons Completed */}
+                            <div className={`${styles.statCard} ${styles.statCardLessons}`}>
+                                <div className={styles.statHeader}>
+                                    <span className={styles.statTitle}>Lessons Completed</span>
+                                    <div className={styles.statIconWrapper}><BookOpen size={18} /></div>
+                                </div>
+                                <div className={styles.statValue}>{dashboardStats?.lessonsToday?.toLocaleString() || '0'}</div>
+                                <div className={styles.statTrend}>
+                                    <Circle size={10} fill="currentColor" style={{marginRight: '4px', display: 'inline-block'}} /> Today
+                                </div>
                             </div>
-                            <div className={`${styles.statCard} ${styles.glassPanel}`}>
-                                <div className={styles.statHeader}><span>Quizzes Completed</span><span>📝</span></div>
+                            
+                            {/* Card 4: Quizzes Completed */}
+                            <div className={`${styles.statCard} ${styles.statCardQuizzes}`}>
+                                <div className={styles.statHeader}>
+                                    <span className={styles.statTitle}>Quizzes Completed</span>
+                                    <div className={styles.statIconWrapper}><FileText size={18} /></div>
+                                </div>
                                 <div className={styles.statValue}>{dashboardStats?.quizzesCompleted || 0}</div>
-                                <div className={styles.statTrend}>Today</div>
+                                <div className={styles.statTrend}>
+                                    <Circle size={10} fill="currentColor" style={{marginRight: '4px', display: 'inline-block'}} /> Today
+                                </div>
                             </div>
-                            <div className={`${styles.statCard} ${styles.glassPanel}`}>
-                                <div className={styles.statHeader}><span>Study Sessions</span><span>🔥</span></div>
+                            
+                            {/* Card 5: Study Sessions */}
+                            <div className={`${styles.statCard} ${styles.statCardSessions}`}>
+                                <div className={styles.statHeader}>
+                                    <span className={styles.statTitle}>Study Sessions</span>
+                                    <div className={styles.statIconWrapper}><Flame size={18} /></div>
+                                </div>
                                 <div className={styles.statValue}>{dashboardStats?.studySessions || 0}</div>
-                                <div className={styles.statTrend}>Today</div>
+                                <div className={styles.statTrend}>
+                                    <Circle size={10} fill="currentColor" style={{marginRight: '4px', display: 'inline-block'}} /> Today
+                                </div>
                             </div>
-
                         </section>
-
+                        
                         {/* Charts Row 1: Growth & Role */}
                         <section className={`${styles.twoColGrid} ${styles.dashboardSection}`}>
                             <div className={styles.glassPanel} style={{padding: '20px'}}>
