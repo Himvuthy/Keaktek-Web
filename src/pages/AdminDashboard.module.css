@@ -15,7 +15,7 @@
 
 .dashboardWrapper {
     display: flex;
-    background-color: #D9D9D9;
+    background-color: transparent;
     position: relative;
     overflow-x: hidden;
     color: #333;
@@ -24,12 +24,12 @@
 }
 
 :global(body.dark-theme) .dashboardWrapper {
-    background-color: #000000;
+    background-color: transparent;
     color: #ffffff;
     --text-color: #fff;
 }
 :global(body.oled-theme) .dashboardWrapper {
-    background-color: #000000;
+    background-color: transparent;
 }
 
 /* --- REUSABLE PANELS --- */

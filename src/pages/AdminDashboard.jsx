@@ -1,3 +1,4 @@
+import { apiFetch } from '../api';
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -8,6 +9,7 @@ import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { Clock, GraduationCap, Target, Sparkles, MessageSquare, Activity, ChevronRight, Bell } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import StudyBackground from '../components/StudyBackground';
 import ContentTab from '../components/ContentTab';
 import Skeleton from '../components/Skeleton';
 export default function AdminDashboard() {
@@ -35,7 +37,7 @@ export default function AdminDashboard() {
     const [isFormRoleDropdownOpen, setIsFormRoleDropdownOpen] = useState(false);
     const [isFrequencyDropdownOpen, setIsFrequencyDropdownOpen] = useState(false);
 
-    const { token, user } = useAuth();
+    const { token, user, logout } = useAuth();
     const navigate = useNavigate();
     const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
     const [invitations, setInvitations] = useState([]);
@@ -120,7 +122,7 @@ export default function AdminDashboard() {
     const { data: usersData, isLoading: loadingUsersQuery } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
-            const res = await fetch(import.meta.env.VITE_API_URL + '/users', {
+            const res = await apiFetch('/users', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!res.ok) throw new Error('Failed to fetch users');
@@ -143,8 +145,8 @@ export default function AdminDashboard() {
         queryKey: ['dashboardStats'],
         queryFn: async () => {
             const [overviewRes, recentRes] = await Promise.all([
-                fetch(import.meta.env.VITE_API_URL + '/stats/overview', { headers: { 'Authorization': `Bearer ${token}` } }),
-                fetch(import.meta.env.VITE_API_URL + '/stats/recent-users', { headers: { 'Authorization': `Bearer ${token}` } })
+                apiFetch('/stats/overview', { headers: { 'Authorization': `Bearer ${token}` } }),
+                apiFetch('/stats/recent-users', { headers: { 'Authorization': `Bearer ${token}` } })
             ]);
             if (!overviewRes.ok || !recentRes.ok) throw new Error('Failed to fetch dashboard stats');
             const overview = await overviewRes.json();
@@ -163,7 +165,7 @@ export default function AdminDashboard() {
 
     const handleRespondInvitation = async (invitationId, accept) => {
         try {
-            const res = await fetch(import.meta.env.VITE_API_URL + '/users/respond-invitation', {
+            const res = await apiFetch('/users/respond-invitation', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -183,7 +185,7 @@ export default function AdminDashboard() {
     const handleGenerateCode = async () => {
         setIsGeneratingCode(true);
         try {
-            const res = await fetch(import.meta.env.VITE_API_URL + '/users/generate-connection-code', {
+            const res = await apiFetch('/users/generate-connection-code', {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -206,7 +208,7 @@ export default function AdminDashboard() {
             return;
         }
         try {
-            const res = await fetch(import.meta.env.VITE_API_URL + '/users/initiate-disconnect', {
+            const res = await apiFetch('/users/initiate-disconnect', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -229,7 +231,7 @@ export default function AdminDashboard() {
     const { data: auditLogsData } = useQuery({
         queryKey: ['auditLogs'],
         queryFn: async () => {
-            const res = await fetch(import.meta.env.VITE_API_URL + '/audit', { headers: { 'Authorization': `Bearer ${token}` } });
+            const res = await apiFetch('/audit', { headers: { 'Authorization': `Bearer ${token}` } });
             if (!res.ok) throw new Error('Network error');
             return res.json();
         },
@@ -244,7 +246,7 @@ export default function AdminDashboard() {
     const { data: logFilesData } = useQuery({
         queryKey: ['logFiles'],
         queryFn: async () => {
-            const res = await fetch(import.meta.env.VITE_API_URL + '/files/logs', { headers: { 'Authorization': `Bearer ${token}` } });
+            const res = await apiFetch('/files/logs', { headers: { 'Authorization': `Bearer ${token}` } });
             if (!res.ok) throw new Error('Network error');
             return res.json();
         },
@@ -259,7 +261,7 @@ useEffect(() => {
         const fetchInvitations = async () => {
             if (user?.role === 'Student' && token) {
                 try {
-                    const res = await fetch(import.meta.env.VITE_API_URL + '/users/invitations', {
+                    const res = await apiFetch('/users/invitations', {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     if (res.ok) {
@@ -280,7 +282,7 @@ useEffect(() => {
         const fetchChildren = async () => {
             if (user?.role === 'Parent' && token) {
                 try {
-                    const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${user.uid}/children`, {
+                    const res = await apiFetch(`/users/${user.uid}/children`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     if (res.ok) {
@@ -330,7 +332,7 @@ useEffect(() => {
     const handleAddUser = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(import.meta.env.VITE_API_URL + '/auth/register', {
+            const res = await apiFetch('/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(modalForm)
@@ -351,7 +353,7 @@ useEffect(() => {
     
     const modifyRoleMutation = useMutation({
         mutationFn: async ({ targetUser, newRole }) => {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${targetUser.uid}/role`, {
+            const res = await apiFetch(`/users/${targetUser.uid}/role`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -411,7 +413,7 @@ useEffect(() => {
         setIsEditModalOpen(false);
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${selectedUser.uid}`, {
+            const res = await apiFetch(`/users/${selectedUser.uid}`, {
                 method: 'PUT',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -443,7 +445,7 @@ useEffect(() => {
         setIsDeleteModalOpen(false);
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${selectedUser.uid}`, {
+            const res = await apiFetch(`/users/${selectedUser.uid}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -469,7 +471,7 @@ useEffect(() => {
         setIsResetModalOpen(false);
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${selectedUser.uid}/reset-password`, {
+            const res = await apiFetch(`/users/${selectedUser.uid}/reset-password`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -582,7 +584,7 @@ useEffect(() => {
     };
 
     const handleLogout = () => {
-        // Here you would clear tokens, etc.
+        logout();
         navigate('/login');
     };
 
@@ -1975,7 +1977,7 @@ useEffect(() => {
                                     <td>
                                         <svg onClick={async () => {
                                             try {
-                                                await fetch(`${import.meta.env.VITE_API_URL}/files/logs/${file.name}`, {
+                                                await apiFetch(`/files/logs/${file.name}`, {
                                                     method: 'DELETE',
                                                     headers: { 'Authorization': `Bearer ${token}` }
                                                 });
@@ -1996,10 +1998,12 @@ useEffect(() => {
 
     return (
         <div className={styles.dashboardWrapper}>
+            <StudyBackground isDark={isDark} />
             <aside className={`${styles.sidebar} ${styles.glassPanel}`}>
                 <div className={styles.logoContainer}>
                     <img src={logoLight} alt="Keaktek" className={styles.logoLight} />
                     <img src={logoDark} alt="Keaktek" className={styles.logoDark} />
+                    <span className={styles.logoText}>Keaktek</span>
                 </div>
                 <ul className={styles.navLinks}>
                     {user?.role === 'Student' ? (
