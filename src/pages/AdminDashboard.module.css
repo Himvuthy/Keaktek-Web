@@ -944,11 +944,11 @@
 .pageContent {
     display: flex; 
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 10px 30px 30px 30px;
+    padding: 20px;
 }
 
 /* Custom scrollbar for pageContent */
@@ -2029,7 +2029,7 @@ select.formInput {
 
 /* --- OVERVIEW DASHBOARD REDESIGN --- */
 .dashboardSection {
-    margin-bottom: 24px;
+    margin-bottom: 0;
 }
 .flexBetween {
     display: flex;
@@ -2075,12 +2075,12 @@ select.formInput {
 .fiveColGrid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 15px;
+    gap: 20px;
 }
 .sixColGrid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 15px;
+    gap: 20px;
 }
 @media (max-width: 1400px) {
     .fiveColGrid, .sixColGrid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
