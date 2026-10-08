@@ -128,8 +128,8 @@ route('GET', '/auth/me', async () => {
 // GET /auth/config
 route('GET', '/auth/config', async () => {
     return {
-        googleClientId: (typeof import !== 'undefined' && import.meta && import.meta.env ? import.meta.env.VITE_GOOGLE_CLIENT_ID : null),
-        facebookAppId: (typeof import !== 'undefined' && import.meta && import.meta.env ? import.meta.env.VITE_FACEBOOK_APP_ID : null)
+        googleClientId: (() => { try { return import.meta.env.VITE_GOOGLE_CLIENT_ID; } catch(e) {} return '203785954803-jtob1p5clnhuvh1r98a2uvrt1dgq302h.apps.googleusercontent.com'; })(),
+        facebookAppId: (() => { try { return import.meta.env.VITE_FACEBOOK_APP_ID; } catch(e) { return null; } })()
     };
 });
 
