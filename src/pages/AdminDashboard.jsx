@@ -259,6 +259,26 @@ export default function AdminDashboard() {
         if (logFilesData) setLogFiles(logFilesData);
     }, [logFilesData]);
 
+    useEffect(() => {
+        if (!token) return;
+        const fetchGrowth = async () => {
+            try {
+                const res = await apiFetch(`/stats/user-growth?year=${selectedYear}`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (res.ok) {
+                    const data = await res.json();
+                    setYearlyGrowth(data);
+                } else {
+                    const err = await res.text();
+                    console.error("Failed to fetch yearly growth:", err);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchGrowth();
+    }, [selectedYear, token]);
+
+
 useEffect(() => {
         const fetchInvitations = async () => {
             if (user?.role === 'Student' && token) {
