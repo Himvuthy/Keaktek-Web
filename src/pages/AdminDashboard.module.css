@@ -90,7 +90,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 .logoText {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 800;
     color: #111;
 }
@@ -168,7 +168,7 @@
 }
 
 .premiumGreeting {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 600;
     margin: 0;
     color: #ededed;
@@ -377,7 +377,7 @@
 }
 
 .statCardValue {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 600;
     color: #ededed;
     margin-bottom: 8px;
@@ -865,7 +865,7 @@
     align-items: center;
 }
 
-.headerTitle h1 { font-size: 28px; color: #111; margin-bottom: 5px; }
+.headerTitle h1 { font-size: 26px; color: #111; margin-bottom: 5px; }
 :global(body.dark-theme) .headerTitle h1 { color: #fff; }
 .headerTitle p { color: #666; font-size: 14px; margin-top: 5px; font-weight: bold; }
 :global(body.dark-theme) .headerTitle p { color: #aaa; }
@@ -1470,7 +1470,7 @@ select.formInput {
 :global(body:not(.dark-theme)) .circleInner { background: #f9f9f9; }
 
 .gradePercent {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 800;
     color: #fff;
 }
@@ -1936,7 +1936,7 @@ select.formInput {
     align-items: center;
 }
 .welcomeHeader {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 700;
     margin: 0 0 5px 0;
     color: var(--text-color, #fff);
