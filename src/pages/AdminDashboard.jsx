@@ -1548,6 +1548,25 @@ useEffect(() => {
         </div>
     );
 
+    
+    const renderGamesTab = () => (
+        <div className={`${styles.pageContent} ${activeTab === 'Games' ? (isSwitching ? styles.animateFadeIn : '') : styles.hidden}`} style={{ display: activeTab === 'Games' ? 'flex' : 'none', flexDirection: 'column' }}>
+            <section className={styles.glassPanel} style={{padding: '30px', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', minHeight: '60vh'}}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{width: '64px', height: '64px', color: '#6366f1', marginBottom: '20px'}}>
+                    <path d="M6 12h4m-2 -2v4m4-1h.01M16 11h.01"></path>
+                    <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                </svg>
+                <h2 style={{marginBottom: '10px', fontSize: '24px'}}>Games Management</h2>
+                <p style={{color: 'var(--text-muted, #888)', maxWidth: '400px', marginBottom: '30px'}}>
+                    Add, modify, and publish interactive games to the Keaktek app. This module is currently under development.
+                </p>
+                <button style={{ padding: '10px 20px', background: '#6366f1', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', opacity: 0.7, cursor: 'not-allowed' }}>
+                    Publish New Game
+                </button>
+            </section>
+        </div>
+    );
+
     const renderConsoleTab = () => (
         <div className={`${styles.pageContent} ${activeTab === 'Console' ? (isSwitching ? styles.animateFadeIn : '') : styles.hidden}`} style={{ display: activeTab === 'Console' ? 'flex' : 'none' }}>
             <section style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -2125,6 +2144,13 @@ useEffect(() => {
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                                 Content
                             </li>
+                            <li data-tooltip="Manage Games" className={`${activeTab === 'Games' ? styles.active : ''} ${styles.tooltip}`} onClick={() => handleTabChange('Games')}>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M6 12h4m-2 -2v4m4-1h.01M16 11h.01"></path>
+                                    <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                                </svg>
+                                Games
+                            </li>
                             <li data-tooltip="System Console" className={`${activeTab === 'Console' ? styles.active : ''} ${styles.tooltip}`} onClick={() => handleTabChange('Console')}>
                                 <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
                                 Console
@@ -2239,7 +2265,8 @@ useEffect(() => {
                 {renderDashboardTab()}
                 {renderUsersTab()}
                 {renderAnalyticsTab()}
-                <ContentTab activeTab={activeTab} isSwitching={isSwitching} />
+                {renderGamesTab()}
+                  <ContentTab activeTab={activeTab} isSwitching={isSwitching} />
                 {renderConsoleTab()}
                 {renderFileTab()}
                 {renderSettingsTab()}
