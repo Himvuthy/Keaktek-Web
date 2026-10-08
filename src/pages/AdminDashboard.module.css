@@ -77,27 +77,39 @@
 
 .logoContainer {
     display: flex;
+    align-items: center;
     justify-content: flex-start;
     padding-left: 15px;
     margin-top: 5px;
     padding-bottom: 25px;
     margin-bottom: 25px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    gap: 12px;
 }
 :global(body.dark-theme) .logoContainer {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-
+.logoText {
+    font-size: 28px;
+    font-weight: 800;
+    color: #111;
+}
+:global(body.dark-theme) .logoText {
+    color: #fff;
+}
 .logoLight {
     display: block;
-    max-width: 150px;
-    height: auto;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    object-fit: cover;
 }
-
 .logoDark {
     display: none;
-    max-width: 150px;
-    height: auto;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    object-fit: cover;
 }
 
 :global(body.dark-theme) .logoLight {
@@ -1924,7 +1936,7 @@ select.formInput {
     align-items: center;
 }
 .welcomeHeader {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 700;
     margin: 0 0 5px 0;
     color: var(--text-color, #fff);

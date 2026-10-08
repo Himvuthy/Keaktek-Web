@@ -1,6 +1,7 @@
 /* Login Page Scoped Styles */
 
 .loginWrapper {
+    position: relative;
     --canvas-bg: #F2F2F2;
     --text-main: #0D0D0D;
     --text-muted: #4D4D4D;
@@ -18,6 +19,7 @@
 }
 
 :global(body.dark-mode) .loginWrapper {
+    position: relative;
     --canvas-bg: #0D0D0D;
     --text-main: #F2F2F2;
     --text-muted: #E6E6E6;
@@ -34,6 +36,8 @@
 }
 
 .websiteCanvas {
+    position: relative;
+    z-index: 1;
     width: 100%;
     height: 100vh; 
     overflow: hidden; 
@@ -92,13 +96,28 @@
     transition: opacity 0.4s ease;
 }
 
-.uploadedLogo {
+.logoContainer {
     position: absolute;
     top: clamp(1rem, 2vw, 1.5rem);
     left: clamp(1rem, 2vw, 1.5rem);
-    height: clamp(3.5rem, 6vw, 4.5rem); 
     z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.uploadedLogo {
+    height: clamp(2.5rem, 4.5vw, 3.2rem); 
+    border-radius: 12px;
     transition: filter 0.4s ease;
+}
+.logoText {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 800;
+    color: #111;
+    transition: color 0.4s ease;
+}
+:global(body.dark-mode) .logoText {
+    color: #fff;
 }
 
 .themeToggleBtn {
@@ -375,3 +394,5 @@
 .facebookBtn:hover {
     background-color: #166FE5 !important;
 }
+
+
