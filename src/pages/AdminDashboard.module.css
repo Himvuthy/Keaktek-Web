@@ -2316,7 +2316,6 @@ select.formInput {
 }
 
 /* --- OLED THEME OVERRIDES --- */
-:global(body.oled-theme) .dashboardWrapper,
 :global(body.oled-theme) .glassPanel,
 :global(body.oled-theme) .sidebar,
 :global(body.oled-theme) .tablePopup,

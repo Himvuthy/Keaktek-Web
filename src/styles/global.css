@@ -1218,3 +1218,15 @@ body.dark-mode .theme-toggle::after {
     clip: rect(0, 0, 0, 0);
     border: 0;
 }
+
+:root { --study-bg: #F2F2F2; --study-icon: #c9c9ea; --study-fill: #e8e8f7; }
+body.dark-mode, body.dark-theme { 
+    --study-bg: #0A0A0A; 
+    --study-icon: #1c1c1c; 
+    --study-fill: #151515; 
+}
+body.oled-theme { 
+    --study-bg: #000000; 
+    --study-icon: #1c1c1c; 
+    --study-fill: #111111; 
+}
