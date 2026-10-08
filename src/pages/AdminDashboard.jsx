@@ -2212,22 +2212,7 @@ useEffect(() => {
                                 )}
                             </div>
                         </div>
-                        <div style={{ marginLeft: '15px', display: 'flex', alignItems: 'center' }}>
-                            {user?.profilePictureURL ? (
-                                <img 
-                                    src={getAvatarUrl(user.profilePictureURL)} 
-                                    alt="Profile" 
-                                    style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(255,255,255,0.1)' }} 
-                                />
-                            ) : (
-                                <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid rgba(255,255,255,0.1)' }}>
-                                    <span style={{ color: '#fff', fontSize: '16px', fontWeight: 'bold' }}>
-                                        {user?.firstName?.[0] || 'U'}
-                                    </span>
-                                </div>
-                            )}
                         </div>
-                    </div>
                 </header>
 
                 {renderDashboardTab()}
