@@ -1,3 +1,4 @@
+import { apiFetch } from '../api';
 import React, { useState, useEffect } from 'react';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 import styles from './NewModal.module.css';
@@ -37,7 +38,7 @@ export default function NewQuizModal({ editingItem, onClose }) {
         queryKey: ['lessonsList'],
         queryFn: async () => {
             const token = localStorage.getItem('studyapp_token');
-            const res = await fetch(import.meta.env.VITE_API_URL + '/lessons', {
+            const res = await apiFetch('/lessons', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!res.ok) return [];
@@ -63,13 +64,13 @@ export default function NewQuizModal({ editingItem, onClose }) {
         if (!subjectName) return null;
         const token = localStorage.getItem('studyapp_token');
         
-        const res = await fetch(import.meta.env.VITE_API_URL + '/subjects', { headers: { 'Authorization': `Bearer ${token}` } });
+        const res = await apiFetch('/subjects', { headers: { 'Authorization': `Bearer ${token}` } });
         const subjects = await res.json();
         
         const existing = subjects.find(s => s.subjectname.toLowerCase() === subjectName.toLowerCase());
         if (existing) return existing.subjectid;
         
-        const createRes = await fetch(import.meta.env.VITE_API_URL + '/subjects', {
+        const createRes = await apiFetch('/subjects', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ subjectName })
@@ -159,7 +160,7 @@ export default function NewQuizModal({ editingItem, onClose }) {
                 });
                 onClose(); // Close modal immediately for snappy UX
 
-                fetch(import.meta.env.VITE_API_URL + endpoint, {
+                apiFetch(endpoint, {
                     method,
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(quizPayload)
@@ -172,7 +173,7 @@ export default function NewQuizModal({ editingItem, onClose }) {
                 });
             } else {
                 // Create mode - wait for ID
-                const quizRes = await fetch(import.meta.env.VITE_API_URL + endpoint, {
+                const quizRes = await apiFetch(endpoint, {
                     method,
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(quizPayload)
@@ -191,7 +192,7 @@ export default function NewQuizModal({ editingItem, onClose }) {
                     };
                     if (qPayload.options.length === 0) continue;
 
-                    await fetch(import.meta.env.VITE_API_URL + `/quizzes/${quizId}/questions`, {
+                    await apiFetch(`/quizzes/${quizId}/questions`, {
                         method: 'POST',
                         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify(qPayload)

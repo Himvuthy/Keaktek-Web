@@ -1,3 +1,4 @@
+import { apiFetch } from '../api';
 import React, { useState, useEffect } from 'react';
 import styles from './ContentPreviewModal.module.css';
 
@@ -11,7 +12,7 @@ export default function ContentPreviewModal({ item, onClose }) {
             const token = localStorage.getItem('studyapp_token');
             const endpoint = item.type === 'Lesson' ? `/lessons/${item.id}` : `/quizzes/${item.id}`;
             try {
-                const res = await fetch(import.meta.env.VITE_API_URL + endpoint, {
+                const res = await apiFetch(endpoint, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (!res.ok) throw new Error('Failed to fetch details');

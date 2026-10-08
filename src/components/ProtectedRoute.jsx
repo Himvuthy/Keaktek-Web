@@ -1,3 +1,4 @@
+import { apiFetch } from '../api';
 import React, { useState, useEffect } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -11,7 +12,7 @@ export default function ProtectedRoute() {
     useEffect(() => {
         if (user?.role === 'Parent' && token) {
             setChecking(true);
-            fetch(`http://localhost:5000/api/users/${user.uid}/children`, {
+            apiFetch(`/users/${user.uid}/children`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
             .then(res => res.json())

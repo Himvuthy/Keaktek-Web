@@ -1,3 +1,4 @@
+import { apiFetch } from '../api';
 import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import styles from '../pages/AdminDashboard.module.css';
@@ -41,8 +42,8 @@ export default function ContentTab({ activeTab, isSwitching }) {
             console.log('Action: Fetching content data from server...');
             const token = localStorage.getItem('studyapp_token');
             const [lessonsRes, quizzesRes] = await Promise.all([
-                fetch(import.meta.env.VITE_API_URL + '/lessons', { headers: { 'Authorization': `Bearer ${token}` } }),
-                fetch(import.meta.env.VITE_API_URL + '/quizzes', { headers: { 'Authorization': `Bearer ${token}` } })
+                apiFetch('/lessons', { headers: { 'Authorization': `Bearer ${token}` } }),
+                apiFetch('/quizzes', { headers: { 'Authorization': `Bearer ${token}` } })
             ]);
             
             let lessons = [];
@@ -89,7 +90,7 @@ export default function ContentTab({ activeTab, isSwitching }) {
         const token = localStorage.getItem('studyapp_token');
         const endpoint = item.type === 'Lesson' ? `/lessons/${item.id}` : `/quizzes/${item.id}`;
         try {
-            const res = await fetch(import.meta.env.VITE_API_URL + endpoint, {
+            const res = await apiFetch(endpoint, {
                 method: 'PUT',
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ispublished: !item.ispublished })
@@ -118,7 +119,7 @@ export default function ContentTab({ activeTab, isSwitching }) {
         const token = localStorage.getItem('studyapp_token');
         const endpoint = item.type === 'Lesson' ? `/lessons/${item.id}` : `/quizzes/${item.id}`;
         try {
-            await fetch(import.meta.env.VITE_API_URL + endpoint, {
+            await apiFetch(endpoint, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

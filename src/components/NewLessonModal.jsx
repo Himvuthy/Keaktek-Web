@@ -1,3 +1,4 @@
+import { apiFetch } from '../api';
 import React, { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import styles from './NewModal.module.css';
@@ -49,7 +50,7 @@ export default function NewLessonModal({ editingItem, onClose }) {
         const token = localStorage.getItem('studyapp_token');
         
         // 1. Fetch all subjects
-        const res = await fetch(import.meta.env.VITE_API_URL + '/subjects', {
+        const res = await apiFetch('/subjects', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const subjects = await res.json();
@@ -59,7 +60,7 @@ export default function NewLessonModal({ editingItem, onClose }) {
         if (existing) return existing.subjectid;
         
         // 3. Create new if not found
-        const createRes = await fetch(import.meta.env.VITE_API_URL + '/subjects', {
+        const createRes = await apiFetch('/subjects', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ subjectName })
@@ -99,7 +100,7 @@ export default function NewLessonModal({ editingItem, onClose }) {
             }
             onClose(); // Close modal immediately for snappy UX
             
-            fetch(import.meta.env.VITE_API_URL + endpoint, {
+            apiFetch(endpoint, {
                 method,
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)

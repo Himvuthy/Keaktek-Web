@@ -1,6 +1,8 @@
+import { apiFetch } from '../api';
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import StudyBackground from '../components/StudyBackground';
 import logoLight from '../assets/logo.png';
 import logoDark from '../assets/logo-dark.png';
 import loginBgLight from '../assets/login-bg.png';
@@ -14,7 +16,7 @@ export default function ParentLogin() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, user } = useAuth();
 
     // Check saved theme
     useEffect(() => {
@@ -24,6 +26,13 @@ export default function ParentLogin() {
             setIsDark(true);
         }
     }, []);
+
+    // Redirect if already logged in
+    useEffect(() => {
+        if (user) {
+            navigate('/dashboard');
+        }
+    }, [user, navigate]);
 
     const toggleTheme = () => {
         const newIsDark = !isDark;
@@ -46,7 +55,7 @@ export default function ParentLogin() {
         }
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+            const response = await apiFetch(`/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -74,12 +83,16 @@ export default function ParentLogin() {
 
     return (
         <div className={styles.loginWrapper}>
+            <StudyBackground isDark={isDark} />
             <div className={styles.websiteCanvas}>
                 <div className={styles.leftPanel}>
                     <img src={isDark ? loginBgDark : loginBgLight} alt="" className={styles.bgImage} />
                     
                     {/* Dynamic Logo */}
-                    <img src={isDark ? logoDark : logoLight} alt="Keaktek Logo" className={styles.uploadedLogo} />
+                    <div className={styles.logoContainer}>
+                        <img src={isDark ? logoDark : logoLight} alt="Keaktek Logo" className={styles.uploadedLogo} />
+                        <span className={styles.logoText}>Keaktek</span>
+                    </div>
                     
                     <button 
                         onClick={toggleTheme}
@@ -140,3 +153,5 @@ export default function ParentLogin() {
         </div>
     );
 }
+
+

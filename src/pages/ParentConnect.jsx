@@ -1,3 +1,5 @@
+import { apiFetch } from '../api';
+import { supabase } from '../supabaseClient';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './ParentConnect.module.css';
@@ -23,7 +25,7 @@ const ParentConnect = () => {
             const token = localStorage.getItem('studyapp_token');
             if (token) {
                 try {
-                    const res = await fetch(import.meta.env.VITE_API_URL + '/users/parent-invitations', {
+                    const res = await apiFetch('/users/parent-invitations', {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     if (res.ok) {
@@ -68,7 +70,7 @@ const ParentConnect = () => {
 
         const token = localStorage.getItem('studyapp_token');
         try {
-            const res = await fetch(import.meta.env.VITE_API_URL + '/users/submit-connection-code', {
+            const res = await apiFetch('/users/submit-connection-code', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -92,7 +94,8 @@ const ParentConnect = () => {
         }
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
         localStorage.removeItem('studyapp_token');
         localStorage.removeItem('studyapp_user');
         navigate('/login');
@@ -104,7 +107,7 @@ const ParentConnect = () => {
         const token = localStorage.getItem('studyapp_token');
         if (user && user.uid) {
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${user.uid}/children`, {
+                const res = await apiFetch(`/users/${user.uid}/children`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {

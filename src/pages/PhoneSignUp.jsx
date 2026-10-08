@@ -1,6 +1,8 @@
+import { apiFetch } from '../api';
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import StudyBackground from '../components/StudyBackground';
 import WaveBackground from '../components/WaveBackground';
 import { auth } from '../firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
@@ -138,7 +140,7 @@ export default function PhoneSignUp() {
             const idToken = await fbUser.getIdToken();
 
             // 3. Send token to our backend for database linking and JWT generation
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/phone/verify`, {
+            const response = await apiFetch(`/auth/phone/verify`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ idToken, password, phoneNumber: fbUser.phoneNumber })
@@ -171,13 +173,17 @@ export default function PhoneSignUp() {
 
     return (
         <div className={styles.wrapper}>
+            <StudyBackground isDark={isDark} />
             <div className={styles.websiteCanvas}>
                 
                 <div className={styles.leftPanel}>
                     <WaveBackground className={styles.bgCanvas} isDark={isDark} />
                     
                     {/* Dynamic Logo */}
-                    <img src={isDark ? logoDark : logoLight} alt="Keaktek Logo" className={styles.uploadedLogo} />
+                    <div className={styles.logoContainer}>
+                        <img src={isDark ? logoDark : logoLight} alt="Keaktek Logo" className={styles.uploadedLogo} />
+                        <span className={styles.logoText}>Keaktek</span>
+                    </div>
                     
                     <button 
                         onClick={toggleTheme}
@@ -278,3 +284,5 @@ export default function PhoneSignUp() {
         </div>
     );
 }
+
+

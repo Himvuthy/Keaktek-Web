@@ -88,15 +88,24 @@ route('GET', '/stats/user-growth', async ({ query }) => {
     await requireRole('Admin');
     const year = parseInt(query.year) || new Date().getFullYear();
     
-    const dbGrowth = unwrap(await supabase.rpc('get_user_growth_by_year', { p_year: year }));
+    const { data, error } = await supabase
+        .from('User')
+        .select('createdat')
+        .gte('createdat', `${year}-01-01T00:00:00.000Z`)
+        .lt('createdat', `${year + 1}-01-01T00:00:00.000Z`);
+        
+    if (error) throw new ApiError(500, error.message);
     
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const userGrowth = months.map(m => ({ month: m, count: 0 }));
     
-    if (dbGrowth && dbGrowth.length) {
-        dbGrowth.forEach(row => {
-            const index = userGrowth.findIndex(g => g.month === row.month);
-            if (index !== -1) userGrowth[index].count = parseInt(row.count, 10);
+    if (data) {
+        data.forEach(user => {
+            if (user.createdat) {
+                const date = new Date(user.createdat);
+                const monthIndex = date.getMonth();
+                userGrowth[monthIndex].count += 1;
+            }
         });
     }
     

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import StudyBackground from '../components/StudyBackground';
 import WaveBackground from '../components/WaveBackground';
 import styles from './Register.module.css';
 import logoLight from '../assets/logo.png';
@@ -131,13 +132,17 @@ export default function Register() {
 
     return (
         <div className={styles.registerWrapper}>
+            <StudyBackground isDark={isDark} />
             <div className={styles.websiteCanvas}>
                 
                 <div className={styles.leftPanel}>
                     <WaveBackground className={styles.bgCanvas} isDark={isDark} />
                     
                     {/* Dynamic Logo */}
-                    <img src={isDark ? logoDark : logoLight} alt="Keaktek Logo" className={styles.uploadedLogo} />
+                    <div className={styles.logoContainer}>
+                        <img src={isDark ? logoDark : logoLight} alt="Keaktek Logo" className={styles.uploadedLogo} />
+                        <span className={styles.logoText}>Keaktek</span>
+                    </div>
                     
                     <button 
                         onClick={toggleTheme}
@@ -200,3 +205,4 @@ export default function Register() {
         </div>
     );
 }
+

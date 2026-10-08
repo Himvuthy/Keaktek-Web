@@ -1,9 +1,12 @@
+import { apiFetch } from '../api';
+import { supabase } from '../supabaseClient';
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
 import logoLight from '../assets/logo.png';
 import logoDark from '../assets/logo-dark.png';
+import StudyBackground from '../components/StudyBackground';
 import loginBgLight from '../assets/login-bg.png';
 import loginBgDark from '../assets/login-bg-dark.png';
 
@@ -17,14 +20,31 @@ export default function Login() {
     const navigate = useNavigate();
     const { login } = useAuth();
 
-    // Check saved theme
+    // Check saved theme and URL errors
     useEffect(() => {
         const savedTheme = localStorage.getItem('studyapp-theme');
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
             setIsDark(true);
         }
+
+        // Check if Supabase redirected back with an error (query string or hash)
+        const urlParams = new URLSearchParams(window.location.search);
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const errDesc = urlParams.get('error_description') || hashParams.get('error_description');
+        if (errDesc) {
+            setError(errDesc.replace(/\+/g, ' '));
+            window.history.replaceState(null, '', window.location.pathname);
+        }
     }, []);
+
+    // Redirect if already logged in (e.g. after OAuth redirect)
+    const { user } = useAuth();
+    useEffect(() => {
+        if (user) {
+            navigate('/dashboard');
+        }
+    }, [user, navigate]);
 
     const toggleTheme = () => {
         const newIsDark = !isDark;
@@ -47,7 +67,7 @@ export default function Login() {
         }
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+            const response = await apiFetch(`/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -74,35 +94,20 @@ export default function Login() {
         }
     };
 
-    const loginWithGoogle = useGoogleLogin({
-        onSuccess: async (tokenResponse) => {
-            try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/google`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: tokenResponse.access_token }),
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    setError(data.error || 'Google login failed.');
-                    return;
-                }
-
-                login(data.user, data.token);
-                if (!data.user.birthYear || !data.user.grade) {
-                    navigate('/profile-setup');
-                } else {
-                    navigate('/dashboard');
-                }
-            } catch (err) {
-                console.error('Google login error:', err);
-                setError('An error occurred during Google login.');
+    const loginWithGoogle = async () => {
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: window.location.origin + import.meta.env.BASE_URL + 'login' },
+            });
+            if (error) {
+                setError(error.message || 'Google login failed.');
             }
-        },
-        onError: () => setError('Google Login Failed')
-    });
+        } catch (err) {
+            console.error('Google login error:', err);
+            setError('An error occurred during Google login.');
+        }
+    };
 
     useEffect(() => {
         window.fbAsyncInit = function() {
@@ -138,7 +143,7 @@ export default function Login() {
 
     const handleFacebookLogin = async (response) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/facebook`, {
+            const res = await apiFetch(`/auth/facebook`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ accessToken: response.accessToken }),
@@ -168,12 +173,16 @@ export default function Login() {
 
     return (
         <div className={styles.loginWrapper}>
+            <StudyBackground isDark={isDark} />
             <div className={styles.websiteCanvas}>
                 <div className={styles.leftPanel}>
                     <img src={isDark ? loginBgDark : loginBgLight} alt="" className={styles.bgImage} />
                     
                     {/* Dynamic Logo */}
-                    <img src={isDark ? logoDark : logoLight} alt="Keaktek Logo" className={styles.uploadedLogo} />
+                    <div className={styles.logoContainer}>
+                        <img src={isDark ? logoDark : logoLight} alt="Keaktek Logo" className={styles.uploadedLogo} />
+                        <span className={styles.logoText}>Keaktek</span>
+                    </div>
                     
                     <button 
                         onClick={toggleTheme}
@@ -259,3 +268,6 @@ export default function Login() {
         </div>
     );
 }
+
+
+

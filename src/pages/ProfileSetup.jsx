@@ -1,3 +1,4 @@
+import { apiFetch } from '../api';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -40,7 +41,7 @@ export default function ProfileSetup() {
             const fetchSuggestions = async () => {
                 setLoadingSuggestions(true);
                 try {
-                    const res = await fetch(import.meta.env.VITE_API_URL + '/auth/suggest-usernames', {
+                    const res = await apiFetch('/auth/suggest-usernames', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -176,7 +177,7 @@ export default function ProfileSetup() {
     const handleConfirm = async () => {
         setError('');
         try {
-            const res = await fetch(import.meta.env.VITE_API_URL + '/auth/profile', {
+            const res = await apiFetch('/auth/profile', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

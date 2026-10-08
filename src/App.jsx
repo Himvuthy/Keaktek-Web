@@ -14,7 +14,7 @@ import './index.css';
 
 function App() {
   return (
-    <BrowserRouter basename={import.meta.env.DEV ? "/" : "/Keaktek-Web/"}>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
