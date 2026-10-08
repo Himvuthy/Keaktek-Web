@@ -65,8 +65,14 @@ export default function AdminDashboard() {
         if (saved) return saved.charAt(0).toUpperCase() + saved.slice(1);
         return 'Dark';
     });
-    const [panelSounds, setPanelSounds] = useState(true);
-    const [animations, setAnimations] = useState(true);
+    const [panelSounds, setPanelSounds] = useState(() => {
+        const saved = localStorage.getItem('studyapp-panelsounds');
+        return saved !== null ? saved === 'true' : true;
+    });
+    const [animations, setAnimations] = useState(() => {
+        const saved = localStorage.getItem('studyapp-animations');
+        return saved !== null ? saved === 'true' : true;
+    });
 
     // Mock Backup State
     const [backups, setBackups] = useState([
@@ -74,8 +80,12 @@ export default function AdminDashboard() {
         { id: '2', name: 'backup_2026-07-14_1200.sql', date: '7/14/2026, 12:00 PM', size: '15.2 MB' },
         { id: '3', name: 'backup_2026-07-13_1200.sql', date: '7/13/2026, 12:00 PM', size: '14.9 MB' }
     ]);
-    const [autoBackupFrequency, setAutoBackupFrequency] = useState('Daily');
-    const [autoBackupTime, setAutoBackupTime] = useState('00:00');
+    const [autoBackupFrequency, setAutoBackupFrequency] = useState(() => {
+        return localStorage.getItem('studyapp-autobackupfreq') || 'Daily';
+    });
+    const [autoBackupTime, setAutoBackupTime] = useState(() => {
+        return localStorage.getItem('studyapp-autobackuptime') || '00:00';
+    });
     const [selectedBackups, setSelectedBackups] = useState([]);
 
     const handleForceBackup = () => {
@@ -529,7 +539,8 @@ useEffect(() => {
         const isSystemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         const actualMode = mode === 'auto' ? (isSystemDark ? 'dark' : 'light') : mode;
 
-        document.body.classList.remove('dark-theme', 'oled-theme');
+        document.body.classList.remove('dark-theme', 'oled-theme', 'dark-mode');
+        document.body.style.backgroundColor = ''; // clear any inline style from index.html loader
         
         if (actualMode === 'dark') {
             document.body.classList.add('dark-theme');
@@ -544,14 +555,28 @@ useEffect(() => {
         localStorage.setItem('studyapp-theme', mode);
     }, [themeMode]);
 
-    // Animation synchronization
+    
     useEffect(() => {
+        localStorage.setItem('studyapp-panelsounds', panelSounds);
+    }, [panelSounds]);
+
+    useEffect(() => {
+        localStorage.setItem('studyapp-animations', animations);
         if (!animations) {
             document.body.classList.add('no-animations');
         } else {
             document.body.classList.remove('no-animations');
         }
     }, [animations]);
+
+    useEffect(() => {
+        localStorage.setItem('studyapp-autobackupfreq', autoBackupFrequency);
+    }, [autoBackupFrequency]);
+
+    useEffect(() => {
+        localStorage.setItem('studyapp-autobackuptime', autoBackupTime);
+    }, [autoBackupTime]);
+
 
     const toggleTheme = (e) => {
         if (e) e.stopPropagation();

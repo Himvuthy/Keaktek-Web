@@ -57,9 +57,15 @@
       (function() {
         try {
           var savedTheme = localStorage.getItem('studyapp-theme');
-          if (savedTheme === 'dark') {
+          if (savedTheme === 'dark' || savedTheme === 'oled') {
             document.body.classList.add('dark-mode');
             document.body.classList.add('dark-theme');
+            if (savedTheme === 'oled') {
+                document.body.classList.add('oled-theme');
+                document.body.style.backgroundColor = '#000000';
+            } else {
+                document.body.style.backgroundColor = '#0A0A0A';
+            }
           }
           
           if (sessionStorage.getItem('hasVisited')) {
