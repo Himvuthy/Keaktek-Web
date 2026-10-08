@@ -99,15 +99,15 @@
 }
 .logoLight {
     display: block;
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
     border-radius: 12px;
     object-fit: cover;
 }
 .logoDark {
     display: none;
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
     border-radius: 12px;
     object-fit: cover;
 }
