@@ -41,7 +41,7 @@ export default function ContentPreviewModal({ item, onClose }) {
                         <svg viewBox="0 0 24 24" width="24" height="24" stroke="#8b5cf6" strokeWidth="2" fill="none"><polyline points="15 18 9 12 15 6"></polyline></svg>
                         <span style={{ color: '#8b5cf6', fontWeight: '500' }}>Back</span>
                     </button>
-                    <h2 className={styles.headerTitle}>{item.type} Preview</h2>
+                    <h2 className={styles.headerTitle}>{item.is_placement ? 'Placement Test Preview' : `${item.type} Preview`}</h2>
                     <div style={{width: 60}}></div> {/* Spacer for centering */}
                 </div>
 
@@ -89,12 +89,19 @@ export default function ContentPreviewModal({ item, onClose }) {
                             <div className={styles.card}>
                                 <h3 className={styles.cardTitle}>{data.title}</h3>
                                 <div className={styles.cardMeta}>
-                                    {(data.questions?.length || 0)} questions • {data.subjectname || 'Subject'} • {data.xpreward || 0}XP
+                                    {(data.questions?.length || 0)} questions • {data.subjectname || item.subjectname || 'Subject'} {data.grade ? `• ${data.grade}` : ''} • {data.xpreward || 0}XP
                                 </div>
                             </div>
 
                             {data.questions && data.questions.map((q, qIndex) => (
                                 <div key={q.questionid} className={styles.card}>
+                                    {q.topic && (
+                                        <div style={{ marginBottom: 8 }}>
+                                            <span style={{ display: 'inline-block', padding: '3px 9px', borderRadius: 999, fontSize: 11, fontWeight: 700, background: 'rgba(139, 92, 246, 0.16)', color: '#a78bfa' }}>
+                                                Topic: {q.topic}
+                                            </span>
+                                        </div>
+                                    )}
                                     <div className={styles.questionHeader}>
                                         <div className={styles.questionNumber}>{qIndex + 1}</div>
                                         <div className={styles.questionText}>{q.questiontext}</div>
@@ -103,15 +110,22 @@ export default function ContentPreviewModal({ item, onClose }) {
                                         {q.options && q.options.map((opt, oIndex) => {
                                             const letter = String.fromCharCode(65 + oIndex); // A, B, C, D
                                             return (
-                                                <div key={opt.optionid} className={`${styles.optionItem} ${opt.iscorrect ? styles.correctOption : ''}`}>
-                                                    <div className={styles.optionLetterBox}>
-                                                        {opt.iscorrect ? (
-                                                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="white" strokeWidth="3" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                                        ) : (
-                                                            letter
-                                                        )}
+                                                <div key={opt.optionid} className={`${styles.optionItem} ${opt.iscorrect ? styles.correctOption : ''}`} style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 4 }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%' }}>
+                                                        <div className={styles.optionLetterBox}>
+                                                            {opt.iscorrect ? (
+                                                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="white" strokeWidth="3" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                            ) : (
+                                                                letter
+                                                            )}
+                                                        </div>
+                                                        <span className={styles.optionText}>{opt.option}</span>
                                                     </div>
-                                                    <span className={styles.optionText}>{opt.option}</span>
+                                                    {opt.rationale && (
+                                                        <div style={{ fontSize: 11.5, color: opt.iscorrect ? '#10b981' : '#94a3b8', paddingLeft: 36, lineHeight: 1.4 }}>
+                                                            💡 {opt.rationale}
+                                                        </div>
+                                                    )}
                                                 </div>
                                             );
                                         })}

@@ -2189,6 +2189,10 @@ useEffect(() => {
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                                 Content
                             </li>
+                            <li data-tooltip="Manage Grade Placement" className={`${activeTab === 'Placement' ? styles.active : ''} ${styles.tooltip}`} onClick={() => handleTabChange('Placement')}>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                                Placement
+                            </li>
                             <li data-tooltip="Manage Games" className={`${activeTab === 'Games' ? styles.active : ''} ${styles.tooltip}`} onClick={() => handleTabChange('Games')}>
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M6 12h4m-2 -2v4m4-1h.01M16 11h.01"></path>

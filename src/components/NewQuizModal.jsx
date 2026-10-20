@@ -11,12 +11,14 @@ const GRADE_OPTIONS = [
     { value: 'Grade 9', label: 'Grade 9' },
     { value: 'Grade 10', label: 'Grade 10' },
     { value: 'Grade 11', label: 'Grade 11' },
+    { value: 'Grade 12 (Science)', label: 'Grade 12 (Science)' },
+    { value: 'Grade 12 (Social Science)', label: 'Grade 12 (Social Science)' },
     { value: 'Grade 12 - Science', label: 'Grade 12 - Science' },
     { value: 'Grade 12 - Social Science', label: 'Grade 12 - Social Science' },
-    { value: 'Casual', label: 'Casual' },
+    { value: 'Casual Grade', label: 'Casual Grade' },
 ];
 
-export default function NewQuizModal({ editingItem, onClose }) {
+export default function NewQuizModal({ editingItem, defaultIsPlacement = false, onClose }) {
     const queryClient = useQueryClient();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -26,11 +28,22 @@ export default function NewQuizModal({ editingItem, onClose }) {
         subjectName: '',
         grade: '',
         xpReward: 0,
-        lessonId: ''
+        lessonId: '',
+        is_placement: defaultIsPlacement
     });
 
     const [questions, setQuestions] = useState([
-        { id: 1, text: '', options: [{ id: 1, text: '', isCorrect: true }, { id: 2, text: '', isCorrect: false }] }
+        {
+            id: 1,
+            text: '',
+            topic: '',
+            options: [
+                { id: 1, text: '', isCorrect: true, rationale: '' },
+                { id: 2, text: '', isCorrect: false, rationale: '' },
+                { id: 3, text: '', isCorrect: false, rationale: '' },
+                { id: 4, text: '', isCorrect: false, rationale: '' }
+            ]
+        }
     ]);
 
     // Fetch lessons for the dropdown
@@ -53,10 +66,40 @@ export default function NewQuizModal({ editingItem, onClose }) {
                 subjectName: editingItem.subjectname || '',
                 grade: editingItem.grade || '',
                 xpReward: editingItem.xpreward || 0,
-                lessonId: editingItem.lessonid || ''
+                lessonId: editingItem.lessonid || '',
+                is_placement: !!editingItem.is_placement
             });
-            // We'd need to fetch existing questions if editing, but for now we focus on creation per the mockups.
-            // If editing is required, a separate fetch to /quizzes/:id would populate questions.
+
+            const mapLoadedQuestions = (qList) => {
+                if (!Array.isArray(qList) || qList.length === 0) return;
+                setQuestions(qList.map((q, qIdx) => ({
+                    id: q.questionid || Date.now() + qIdx,
+                    text: q.questiontext || q.text || '',
+                    topic: q.topic || '',
+                    options: Array.isArray(q.options) && q.options.length > 0
+                        ? q.options.map((opt, oIdx) => ({
+                            id: opt.optionid || Date.now() + qIdx * 100 + oIdx,
+                            text: opt.option || opt.text || '',
+                            isCorrect: !!(opt.iscorrect || opt.isCorrect),
+                            rationale: opt.rationale || ''
+                        }))
+                        : [
+                            { id: Date.now() + 1, text: '', isCorrect: true, rationale: '' },
+                            { id: Date.now() + 2, text: '', isCorrect: false, rationale: '' }
+                        ]
+                })));
+            };
+
+            if (Array.isArray(editingItem.questions) && editingItem.questions.length > 0) {
+                mapLoadedQuestions(editingItem.questions);
+            } else if (editingItem.id) {
+                const token = localStorage.getItem('studyapp_token');
+                apiFetch(`/quizzes/${editingItem.id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                }).then(r => r.ok ? r.json() : null).then(detail => {
+                    if (detail?.questions) mapLoadedQuestions(detail.questions);
+                }).catch(() => {});
+            }
         }
     }, [editingItem]);
 
@@ -80,10 +123,17 @@ export default function NewQuizModal({ editingItem, onClose }) {
     };
 
     const handleAddQuestion = () => {
+        const base = Date.now();
         setQuestions([...questions, { 
-            id: Date.now(), 
+            id: base, 
             text: '', 
-            options: [{ id: Date.now()+1, text: '', isCorrect: true }, { id: Date.now()+2, text: '', isCorrect: false }] 
+            topic: '',
+            options: [
+                { id: base + 1, text: '', isCorrect: true, rationale: '' },
+                { id: base + 2, text: '', isCorrect: false, rationale: '' },
+                { id: base + 3, text: '', isCorrect: false, rationale: '' },
+                { id: base + 4, text: '', isCorrect: false, rationale: '' }
+            ] 
         }]);
     };
 
@@ -94,7 +144,7 @@ export default function NewQuizModal({ editingItem, onClose }) {
     const handleAddOption = (qId) => {
         setQuestions(questions.map(q => {
             if (q.id === qId) {
-                return { ...q, options: [...q.options, { id: Date.now(), text: '', isCorrect: false }] };
+                return { ...q, options: [...q.options, { id: Date.now(), text: '', isCorrect: false, rationale: '' }] };
             }
             return q;
         }));
@@ -127,8 +177,21 @@ export default function NewQuizModal({ editingItem, onClose }) {
         }));
     };
 
+    const handleOptionRationaleChange = (qId, oId, rationale) => {
+        setQuestions(questions.map(q => {
+            if (q.id === qId) {
+                return { ...q, options: q.options.map(o => o.id === oId ? { ...o, rationale } : o) };
+            }
+            return q;
+        }));
+    };
+
     const handleQuestionTextChange = (qId, text) => {
         setQuestions(questions.map(q => q.id === qId ? { ...q, text } : q));
+    };
+
+    const handleQuestionTopicChange = (qId, topic) => {
+        setQuestions(questions.map(q => q.id === qId ? { ...q, topic } : q));
     };
 
     const handleSubmit = async (e) => {
@@ -140,39 +203,45 @@ export default function NewQuizModal({ editingItem, onClose }) {
             const token = localStorage.getItem('studyapp_token');
             const subjectId = await getOrCreateSubjectId(form.subjectName);
             
-            // 1. Create Quiz
+            const formattedQuestions = questions
+                .filter(q => q.text && q.text.trim() !== '')
+                .map(q => ({
+                    questionText: q.text.trim(),
+                    topic: q.topic ? q.topic.trim() : null,
+                    options: q.options
+                        .filter(o => o.text && o.text.trim() !== '')
+                        .map(o => ({
+                            option: o.text.trim(),
+                            isCorrect: !!o.isCorrect,
+                            rationale: o.rationale ? o.rationale.trim() : null
+                        }))
+                }))
+                .filter(q => q.options.length > 0);
+
             const quizPayload = {
                 title: form.title,
                 subjectId,
                 grade: form.grade,
                 xpReward: form.xpReward,
-                lessonId: form.lessonId || null
+                lessonId: form.lessonId || null,
+                is_placement: !!form.is_placement,
+                questions: formattedQuestions
             };
 
             const method = editingItem ? 'PUT' : 'POST';
             const endpoint = editingItem ? `/quizzes/${editingItem.id}` : '/quizzes';
             
             if (editingItem) {
-                // Optimistic UI update for edit
-                queryClient.setQueryData(['contentData'], (old) => {
-                    if (!old) return [];
-                    return old.map(c => c.id === editingItem.id && c.type === 'Quiz' ? { ...c, ...quizPayload, subjectname: form.subjectName, updatedat: new Date().toISOString() } : c);
-                });
-                onClose(); // Close modal immediately for snappy UX
-
-                apiFetch(endpoint, {
+                const res = await apiFetch(endpoint, {
                     method,
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(quizPayload)
-                }).then(res => {
-                    if (!res.ok) throw new Error('Failed to save quiz');
-                    queryClient.invalidateQueries({ queryKey: ['contentData'] });
-                }).catch(err => {
-                    console.error('Failed to save quiz', err);
-                    queryClient.invalidateQueries({ queryKey: ['contentData'] }); // rollback
                 });
+                if (!res.ok) throw new Error('Failed to save quiz');
+                queryClient.invalidateQueries({ queryKey: ['contentData'] });
+                queryClient.invalidateQueries({ queryKey: ['placementQuestions'] });
+                onClose();
             } else {
-                // Create mode - wait for ID
                 const quizRes = await apiFetch(endpoint, {
                     method,
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -183,15 +252,7 @@ export default function NewQuizModal({ editingItem, onClose }) {
                 const createdQuiz = await quizRes.json();
                 const quizId = createdQuiz.quizid;
 
-                // 2. Create Questions
-                for (const q of questions) {
-                    if (!q.text) continue;
-                    const qPayload = {
-                        questionText: q.text,
-                        options: q.options.map(o => ({ option: o.text, isCorrect: o.isCorrect })).filter(o => o.option.trim() !== '')
-                    };
-                    if (qPayload.options.length === 0) continue;
-
+                for (const qPayload of formattedQuestions) {
                     await apiFetch(`/quizzes/${quizId}/questions`, {
                         method: 'POST',
                         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -199,6 +260,7 @@ export default function NewQuizModal({ editingItem, onClose }) {
                     });
                 }
                 queryClient.invalidateQueries({ queryKey: ['contentData'] });
+                queryClient.invalidateQueries({ queryKey: ['placementQuestions'] });
                 onClose();
             }
         } catch (err) {
@@ -209,7 +271,7 @@ export default function NewQuizModal({ editingItem, onClose }) {
 
     return (
         <div className={styles.overlay} onClick={onClose}>
-            <div className={styles.modalFrame} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalFrame} style={{ maxWidth: 680 }} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.header}>
                     <button type="button" className={styles.backBtn} onClick={onClose}>
                         <svg viewBox="0 0 24 24" width="24" height="24" stroke="#8b5cf6" strokeWidth="2" fill="none"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -224,13 +286,13 @@ export default function NewQuizModal({ editingItem, onClose }) {
 
                     <div className={styles.inputGroup}>
                         <label>Title</label>
-                        <input type="text" placeholder="e.g. Introduction to React" value={form.title} onChange={e => setForm({...form, title: e.target.value})} required />
+                        <input type="text" placeholder="e.g. Grade 12 Mathematics Placement Test" value={form.title} onChange={e => setForm({...form, title: e.target.value})} required />
                     </div>
 
                     <div className={styles.rowGroup}>
                         <div className={styles.inputGroup} style={{flex: 2}}>
                             <label>Subject / Category</label>
-                            <input type="text" placeholder="e.g. Web Developr" value={form.subjectName} onChange={e => setForm({...form, subjectName: e.target.value})} required />
+                            <input type="text" placeholder="e.g. Math, Physics" value={form.subjectName} onChange={e => setForm({...form, subjectName: e.target.value})} required />
                         </div>
                         <div className={styles.inputGroup} style={{flex: 1}}>
                             <label>Grade</label>
@@ -243,74 +305,105 @@ export default function NewQuizModal({ editingItem, onClose }) {
                         </div>
                     </div>
 
-                    <div className={styles.inputGroup}>
-                        <label>XP Reward</label>
-                        <input type="number" placeholder="50" value={form.xpReward} onChange={e => setForm({...form, xpReward: parseInt(e.target.value) || 0})} />
+                    <div className={styles.rowGroup}>
+                        <div className={styles.inputGroup} style={{ flex: 1 }}>
+                            <label>XP Reward</label>
+                            <input type="number" placeholder="50" value={form.xpReward} onChange={e => setForm({...form, xpReward: parseInt(e.target.value) || 0})} />
+                        </div>
+                        <div className={styles.inputGroup} style={{ flex: 1, justifyContent: 'flex-end' }}>
+                            <label>Quiz Type</label>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', borderRadius: 12, background: form.is_placement ? 'rgba(139, 92, 246, 0.15)' : 'var(--bg-hover)', border: form.is_placement ? '1px solid #8b5cf6' : '1px solid transparent', cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 600 }}>
+                                <input
+                                    type="checkbox"
+                                    checked={!!form.is_placement}
+                                    onChange={e => setForm({ ...form, is_placement: e.target.checked })}
+                                    style={{ width: 16, height: 16, accentColor: '#8b5cf6' }}
+                                />
+                                Grade Placement Test
+                            </label>
+                        </div>
                     </div>
 
-                    <div className={styles.inputGroup}>
-                        <label>Select Lesson</label>
-                        <CustomSelect 
-                            options={lessons.map(l => ({ value: l.lessonid, label: l.title }))} 
-                            value={form.lessonId} 
-                            onChange={val => setForm({...form, lessonId: val})} 
-                            placeholder="None (Standalone Quiz)"
-                        />
-                    </div>
-
-                    {!editingItem && (
-                        <>
-                            <h3 className={styles.sectionTitle}>Questions</h3>
-                            {questions.map((q, index) => (
-                                <div key={q.id} className={styles.questionCard}>
-                                    <div className={styles.questionHeader}>
-                                        <span>Question {index + 1}</span>
-                                        {questions.length > 1 && (
-                                            <button type="button" className={styles.removeBtn} onClick={() => handleRemoveQuestion(q.id)}>Remove</button>
-                                        )}
-                                    </div>
-                                    <input 
-                                        type="text" 
-                                        className={styles.questionInput} 
-                                        placeholder="Enter question..." 
-                                        value={q.text} 
-                                        onChange={e => handleQuestionTextChange(q.id, e.target.value)} 
-                                        required 
-                                    />
-                                    
-                                    <div className={styles.optionsList}>
-                                        {q.options.map((opt, optIndex) => (
-                                            <div key={opt.id} className={styles.optionRow}>
-                                                <div 
-                                                    className={`${styles.radioBtn} ${opt.isCorrect ? styles.selected : ''}`}
-                                                    onClick={() => handleSetCorrectOption(q.id, opt.id)}
-                                                ></div>
-                                                <input 
-                                                    type="text" 
-                                                    className={styles.optionInput} 
-                                                    placeholder={`Option ${optIndex + 1}`} 
-                                                    value={opt.text} 
-                                                    onChange={e => handleOptionTextChange(q.id, opt.id, e.target.value)} 
-                                                    required 
-                                                />
-                                                {q.options.length > 2 && (
-                                                    <button type="button" className={styles.removeBtn} onClick={() => handleRemoveOption(q.id, opt.id)}>✕</button>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <button type="button" className={styles.addOptionBtn} onClick={() => handleAddOption(q.id)}>+ Add Option</button>
-                                </div>
-                            ))}
-
-                            <button type="button" className={styles.addQuestionBtn} onClick={handleAddQuestion}>
-                                + Add Another Question
-                            </button>
-                        </>
+                    {!form.is_placement && (
+                        <div className={styles.inputGroup}>
+                            <label>Select Lesson</label>
+                            <CustomSelect 
+                                options={lessons.map(l => ({ value: l.lessonid, label: l.title }))} 
+                                value={form.lessonId} 
+                                onChange={val => setForm({...form, lessonId: val})} 
+                                placeholder="None (Standalone Quiz)"
+                            />
+                        </div>
                     )}
 
+                    <h3 className={styles.sectionTitle}>Questions ({questions.length})</h3>
+                    {questions.map((q, index) => (
+                        <div key={q.id} className={styles.questionCard}>
+                            <div className={styles.questionHeader}>
+                                <span>Question {index + 1}</span>
+                                {questions.length > 1 && (
+                                    <button type="button" className={styles.removeBtn} onClick={() => handleRemoveQuestion(q.id)}>Remove</button>
+                                )}
+                            </div>
+                            <input 
+                                type="text" 
+                                className={styles.questionInput} 
+                                placeholder="Topic / Skill (e.g. Logarithmic Equations, Simple Harmonic Motion)" 
+                                value={q.topic || ''} 
+                                onChange={e => handleQuestionTopicChange(q.id, e.target.value)} 
+                                style={{ fontSize: 13 }}
+                            />
+                            <textarea 
+                                rows={2}
+                                className={styles.questionInput} 
+                                placeholder="Enter question text (supports LaTeX $...$)..." 
+                                value={q.text} 
+                                onChange={e => handleQuestionTextChange(q.id, e.target.value)} 
+                                required 
+                            />
+                            
+                            <div className={styles.optionsList}>
+                                {q.options.map((opt, optIndex) => (
+                                    <div key={opt.id} style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: 10, borderRadius: 10, background: opt.isCorrect ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255,255,255,0.02)', border: opt.isCorrect ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid rgba(128,128,128,0.15)' }}>
+                                        <div className={styles.optionRow}>
+                                            <div 
+                                                className={`${styles.radioBtn} ${opt.isCorrect ? styles.selected : ''}`}
+                                                onClick={() => handleSetCorrectOption(q.id, opt.id)}
+                                                title="Mark as correct option"
+                                            ></div>
+                                            <input 
+                                                type="text" 
+                                                className={styles.optionInput} 
+                                                placeholder={`Option ${optIndex + 1}`} 
+                                                value={opt.text} 
+                                                onChange={e => handleOptionTextChange(q.id, opt.id, e.target.value)} 
+                                                required 
+                                            />
+                                            {q.options.length > 2 && (
+                                                <button type="button" className={styles.removeBtn} onClick={() => handleRemoveOption(q.id, opt.id)}>✕</button>
+                                            )}
+                                        </div>
+                                        <input
+                                            type="text"
+                                            className={styles.optionInput}
+                                            style={{ marginLeft: 32, fontSize: 12, padding: '8px 12px', opacity: 0.85 }}
+                                            placeholder="Rationale / Explanation (optional — shown in Grade Placement diagnostics)"
+                                            value={opt.rationale || ''}
+                                            onChange={e => handleOptionRationaleChange(q.id, opt.id, e.target.value)}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                            <button type="button" className={styles.addOptionBtn} onClick={() => handleAddOption(q.id)}>+ Add Option</button>
+                        </div>
+                    ))}
+
+                    <button type="button" className={styles.addQuestionBtn} onClick={handleAddQuestion}>
+                        + Add Another Question
+                    </button>
+
                     <button type="submit" className={styles.submitBtn} disabled={loading}>
-                        {loading ? 'Publishing...' : 'Publish'}
+                        {loading ? 'Saving...' : (editingItem ? 'Save Changes' : 'Publish')}
                     </button>
                 </form>
             </div>
