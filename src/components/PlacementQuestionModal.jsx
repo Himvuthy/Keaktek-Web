@@ -206,15 +206,7 @@ export default function PlacementQuestionModal({ editingQuestion, onClose }) {
                         {options.map((opt, idx) => (
                             <div
                                 key={opt.id}
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: 8,
-                                    padding: 14,
-                                    borderRadius: 12,
-                                    background: opt.isCorrect ? 'rgba(16, 185, 129, 0.08)' : 'var(--bg-hover)',
-                                    border: opt.isCorrect ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(128,128,128,0.15)'
-                                }}
+                                className={`${styles.optionCard} ${opt.isCorrect ? styles.optionCardCorrect : ''}`}
                             >
                                 <div className={styles.optionRow}>
                                     <div
@@ -222,7 +214,7 @@ export default function PlacementQuestionModal({ editingQuestion, onClose }) {
                                         onClick={() => handleSetCorrect(opt.id)}
                                         title="Click to mark as correct answer"
                                     />
-                                    <span style={{ fontWeight: 700, fontSize: 13, color: opt.isCorrect ? '#10b981' : '#888', width: 22 }}>
+                                    <span style={{ fontWeight: 700, fontSize: 13, color: opt.isCorrect ? '#10b981' : '#94a3b8', width: 22 }}>
                                         {String.fromCharCode(65 + idx)}.
                                     </span>
                                     <input

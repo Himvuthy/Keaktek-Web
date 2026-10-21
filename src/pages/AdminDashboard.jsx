@@ -24,7 +24,8 @@ export default function AdminDashboard() {
 
     const [isDark, setIsDark] = useState(false);
     const [activeTab, setActiveTab] = useState(() => {
-        return localStorage.getItem('studyapp-activetab') || 'Dashboard';
+        const savedTab = localStorage.getItem('studyapp-activetab');
+        return savedTab === 'Placement' ? 'Content' : (savedTab || 'Dashboard');
     });
     const [isSwitching, setIsSwitching] = useState(false);
     const [isSearchActive, setIsSearchActive] = useState(false);
@@ -2188,10 +2189,6 @@ useEffect(() => {
                             <li data-tooltip="Manage Content" className={`${activeTab === 'Content' ? styles.active : ''} ${styles.tooltip}`} onClick={() => handleTabChange('Content')}>
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                                 Content
-                            </li>
-                            <li data-tooltip="Manage Grade Placement" className={`${activeTab === 'Placement' ? styles.active : ''} ${styles.tooltip}`} onClick={() => handleTabChange('Placement')}>
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
-                                Placement
                             </li>
                             <li data-tooltip="Manage Games" className={`${activeTab === 'Games' ? styles.active : ''} ${styles.tooltip}`} onClick={() => handleTabChange('Games')}>
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

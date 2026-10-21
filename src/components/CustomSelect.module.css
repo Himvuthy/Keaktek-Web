@@ -5,11 +5,11 @@
 
 .selectHeader {
     background-color: #f5f3ff;
-    border: 2px solid transparent;
+    border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: 12px;
     padding: 14px 16px;
     font-size: 15px;
-    color: #374151;
+    color: #1e293b;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -21,6 +21,26 @@
 .selectHeader.open {
     border-color: #8b5cf6;
     background-color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.25);
+}
+
+:global(body.dark-theme) .selectHeader,
+:global(body.dark-mode) .selectHeader {
+    background-color: #16161b;
+    border: 1px solid #2e2e38;
+    color: #f8fafc;
+}
+
+:global(body.dark-theme) .selectHeader.open,
+:global(body.dark-mode) .selectHeader.open {
+    border-color: #8b5cf6;
+    background-color: #1c1c24;
+}
+
+:global(body.oled-theme) .selectHeader {
+    background-color: #08080a;
+    border-color: #262626;
+    color: #ffffff;
 }
 
 .selectHeader svg {
@@ -42,8 +62,20 @@
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     max-height: 240px;
     overflow-y: auto;
-    z-index: 10;
+    z-index: 50;
     padding: 8px 0;
+}
+
+:global(body.dark-theme) .dropdownList,
+:global(body.dark-mode) .dropdownList {
+    background-color: #141418;
+    border: 1px solid #2e2e38;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.65);
+}
+
+:global(body.oled-theme) .dropdownList {
+    background-color: #050505;
+    border-color: #262626;
 }
 
 .dropdownItem {
@@ -54,12 +86,28 @@
     transition: background-color 0.15s;
 }
 
+:global(body.dark-theme) .dropdownItem,
+:global(body.dark-mode) .dropdownItem {
+    color: #e2e8f0;
+}
+
 .dropdownItem:hover {
     background-color: #f5f3ff;
+}
+
+:global(body.dark-theme) .dropdownItem:hover,
+:global(body.dark-mode) .dropdownItem:hover {
+    background-color: rgba(139, 92, 246, 0.16);
 }
 
 .dropdownItem.selected {
     background-color: #ede9fe;
     color: #6d28d9;
-    font-weight: 500;
+    font-weight: 600;
+}
+
+:global(body.dark-theme) .dropdownItem.selected,
+:global(body.dark-mode) .dropdownItem.selected {
+    background-color: rgba(139, 92, 246, 0.28);
+    color: #c4b5fd;
 }

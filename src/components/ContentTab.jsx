@@ -9,12 +9,8 @@ import PlacementQuestionModal from './PlacementQuestionModal';
 
 export default function ContentTab({ activeTab, isSwitching }) {
     const queryClient = useQueryClient();
-    const isVisible = activeTab === 'Content' || activeTab === 'Placement';
-    const [contentView, setContentView] = useState(activeTab === 'Placement' ? 'placement' : 'all'); // 'all' | 'placement'
-
-    useEffect(() => {
-        if (activeTab === 'Placement') setContentView('placement');
-    }, [activeTab]);
+    const isVisible = activeTab === 'Content';
+    const [contentView, setContentView] = useState('all'); // 'all' | 'placement'
     const [isLessonModalOpen, setIsLessonModalOpen] = useState(false);
     const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
     const [isPlacementQuestionModalOpen, setIsPlacementQuestionModalOpen] = useState(false);
@@ -275,12 +271,13 @@ export default function ContentTab({ activeTab, isSwitching }) {
                             onChange={e => setPlacementSearch(e.target.value)}
                             style={{
                                 padding: '8px 14px',
-                                borderRadius: '8px',
-                                border: '1px solid rgba(128,128,128,0.25)',
-                                background: 'rgba(255,255,255,0.05)',
-                                color: 'inherit',
+                                borderRadius: '10px',
+                                border: '1px solid var(--border-input)',
+                                background: 'var(--bg-input)',
+                                color: 'var(--text-primary)',
                                 fontSize: '13px',
-                                minWidth: '220px'
+                                minWidth: '220px',
+                                outline: 'none'
                             }}
                         />
                         <button
@@ -330,9 +327,9 @@ export default function ContentTab({ activeTab, isSwitching }) {
                                             </div>
                                         </td>
                                         <td>
-                                            <div style={{ fontWeight: 600 }}>{item.title}</div>
+                                            <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{item.title}</div>
                                             {item.type === 'Quiz' && Array.isArray(item.questions) && (
-                                                <div style={{ fontSize: '11.5px', color: '#888', marginTop: 2 }}>
+                                                <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', marginTop: 2 }}>
                                                     {item.questions.length} question{item.questions.length === 1 ? '' : 's'}
                                                 </div>
                                             )}
@@ -434,7 +431,7 @@ export default function ContentTab({ activeTab, isSwitching }) {
                                                 </span>
                                             </td>
                                             <td>
-                                                <div style={{ fontWeight: 600, fontSize: '13.5px', marginBottom: '6px', lineHeight: 1.45 }}>
+                                                <div style={{ fontWeight: 600, fontSize: '13.5px', marginBottom: '6px', lineHeight: 1.45, color: 'var(--text-primary)' }}>
                                                     {q.questiontext}
                                                 </div>
                                                 {correctOpt && (
@@ -443,7 +440,7 @@ export default function ContentTab({ activeTab, isSwitching }) {
                                                     </div>
                                                 )}
                                                 {correctOpt?.rationale && (
-                                                    <div style={{ fontSize: '11.5px', color: '#94a3b8', lineHeight: 1.35 }}>
+                                                    <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
                                                         💡 {correctOpt.rationale}
                                                     </div>
                                                 )}

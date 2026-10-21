@@ -1170,12 +1170,18 @@
 
 .dataTable { width: 100%; border-collapse: collapse; text-align: left; }
 .dataTable th { padding: 15px 10px; color: #666; font-size: 13px; text-transform: uppercase; border-bottom: 2px solid rgba(0,0,0,0.05); }
-:global(body.dark-theme) .dataTable th { color: #888; border-bottom: 2px solid #4D4D4D; }
+:global(body.dark-theme) .dataTable th,
+:global(body.dark-mode) .dataTable th,
+:global(body.oled-theme) .dataTable th { color: #888; border-bottom: 2px solid #4D4D4D; }
 .dataTable td { padding: 15px 10px; font-weight: bold; font-size: 14px; border-bottom: 1px solid rgba(0,0,0,0.05); color: #111; }
-:global(body.dark-theme) .dataTable td { border-bottom: 1px solid #1a1a1a; color: #fff; }
+:global(body.dark-theme) .dataTable td,
+:global(body.dark-mode) .dataTable td,
+:global(body.oled-theme) .dataTable td { border-bottom: 1px solid #1a1a1a; color: #f8fafc; }
 .dataTable tbody tr { transition: background 0.2s ease; }
 .dataTable tbody tr:hover { background: rgba(255,255,255,0.4); }
-:global(body.dark-theme) .dataTable tbody tr:hover { background: #1a1a1a; }
+:global(body.dark-theme) .dataTable tbody tr:hover,
+:global(body.dark-mode) .dataTable tbody tr:hover,
+:global(body.oled-theme) .dataTable tbody tr:hover { background: #1a1a1a; }
 
 /* Role & Status Badges */
 .status { padding: 5px 12px; border-radius: 12px; font-size: 12px; display: inline-block; font-weight: bold;}

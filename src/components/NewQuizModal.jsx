@@ -364,7 +364,7 @@ export default function NewQuizModal({ editingItem, defaultIsPlacement = false, 
                             
                             <div className={styles.optionsList}>
                                 {q.options.map((opt, optIndex) => (
-                                    <div key={opt.id} style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: 10, borderRadius: 10, background: opt.isCorrect ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255,255,255,0.02)', border: opt.isCorrect ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid rgba(128,128,128,0.15)' }}>
+                                    <div key={opt.id} className={`${styles.optionCard} ${opt.isCorrect ? styles.optionCardCorrect : ''}`}>
                                         <div className={styles.optionRow}>
                                             <div 
                                                 className={`${styles.radioBtn} ${opt.isCorrect ? styles.selected : ''}`}
@@ -386,7 +386,7 @@ export default function NewQuizModal({ editingItem, defaultIsPlacement = false, 
                                         <input
                                             type="text"
                                             className={styles.optionInput}
-                                            style={{ marginLeft: 32, fontSize: 12, padding: '8px 12px', opacity: 0.85 }}
+                                            style={{ marginLeft: 32, fontSize: 12, padding: '8px 12px' }}
                                             placeholder="Rationale / Explanation (optional — shown in Grade Placement diagnostics)"
                                             value={opt.rationale || ''}
                                             onChange={e => handleOptionRationaleChange(q.id, opt.id, e.target.value)}
