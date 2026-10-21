@@ -11,7 +11,14 @@ import loginBgDark from '../assets/login-bg-dark.png';
 import styles from './Login.module.css';
 
 export default function ParentLogin() {
-    const [isDark, setIsDark] = useState(false);
+    const [isDark, setIsDark] = useState(() => {
+        const savedTheme = localStorage.getItem('studyapp-theme');
+        if (savedTheme) {
+            const lower = savedTheme.toLowerCase();
+            return lower === 'dark' || lower === 'oled';
+        }
+        return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    });
     const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -20,12 +27,14 @@ export default function ParentLogin() {
 
     // Check saved theme
     useEffect(() => {
-        const savedTheme = localStorage.getItem('studyapp-theme');
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-            setIsDark(true);
+        if (isDark) {
+            document.body.classList.add('dark-mode', 'dark-theme');
+            document.body.classList.remove('light-mode');
+        } else {
+            document.body.classList.remove('dark-mode', 'dark-theme', 'oled-theme');
+            document.body.classList.add('light-mode');
         }
-    }, []);
+    }, [isDark]);
 
     // Redirect if already logged in
     useEffect(() => {
@@ -35,14 +44,17 @@ export default function ParentLogin() {
     }, [user, navigate]);
 
     const toggleTheme = () => {
-        const newIsDark = !isDark;
-        setIsDark(newIsDark);
-        if (newIsDark) {
-            document.body.classList.add('dark-mode');
+        const nextDark = !isDark;
+        setIsDark(nextDark);
+        if (nextDark) {
+            document.body.classList.add('dark-mode', 'dark-theme');
+            document.body.classList.remove('light-mode');
+            localStorage.setItem('studyapp-theme', 'dark');
         } else {
-            document.body.classList.remove('dark-mode');
+            document.body.classList.remove('dark-mode', 'dark-theme', 'oled-theme');
+            document.body.classList.add('light-mode');
+            localStorage.setItem('studyapp-theme', 'light');
         }
-        localStorage.setItem('studyapp-theme', newIsDark ? 'dark' : 'light');
     };
 
     const handleLogin = async (e) => {
@@ -82,7 +94,7 @@ export default function ParentLogin() {
     const moonPath = <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>;
 
     return (
-        <div className={styles.loginWrapper}>
+        <div className={`${styles.loginWrapper} ${isDark ? styles.dark : ''}`}>
             <StudyBackground isDark={isDark} />
             <div className={styles.websiteCanvas}>
                 <div className={styles.leftPanel}>

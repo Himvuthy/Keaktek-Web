@@ -18,7 +18,13 @@
     transition: background-color 0.4s ease;
 }
 
-:global(body.dark-mode) .wrapper {
+.wrapper.dark,
+:global(body.dark-mode) .wrapper,
+:global(body.dark-theme) .wrapper,
+:global(body.oled-theme) .wrapper,
+.dark .wrapper,
+:global(body.dark-theme) .wrapper,
+:global(body.oled-theme) .wrapper {
     position: relative;
     --canvas-bg: #0D0D0D;
     --text-main: #F2F2F2;
@@ -70,7 +76,10 @@
     transition: box-shadow 0.4s ease;
 }
 
-:global(body.dark-mode) .leftPanel {
+:global(body.dark-mode) .leftPanel ,
+:global(body.dark-theme) .leftPanel ,
+:global(body.oled-theme) .leftPanel ,
+.dark .leftPanel {
     box-shadow: inset 0 0 0 1px rgb(0, 0, 30), 0 20px 30px rgba(0, 0, 0, 0.4);
 }
 
@@ -84,7 +93,10 @@
     z-index: 0;
 }
 
-:global(body.dark-mode) .leftPanel::before {
+:global(body.dark-mode) .leftPanel::before ,
+:global(body.dark-theme) .leftPanel::before ,
+:global(body.oled-theme) .leftPanel::before ,
+.dark .leftPanel::before {
     opacity: 1;
 }
 
@@ -119,7 +131,10 @@
     color: #111;
     transition: color 0.4s ease;
 }
-:global(body.dark-mode) .logoText {
+:global(body.dark-mode) .logoText ,
+:global(body.dark-theme) .logoText ,
+:global(body.oled-theme) .logoText ,
+.dark .logoText {
     color: #fff;
 }
 
@@ -152,14 +167,20 @@
     background: rgba(255, 255, 255, 0.9);
 }
 
-:global(body.dark-mode) .themeToggleBtn {
+:global(body.dark-mode) .themeToggleBtn ,
+:global(body.dark-theme) .themeToggleBtn ,
+:global(body.oled-theme) .themeToggleBtn ,
+.dark .themeToggleBtn {
     background: rgba(30, 30, 30, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #F3F4F6;
     transform: rotate(360deg);
 }
 
-:global(body.dark-mode) .themeToggleBtn:hover {
+:global(body.dark-mode) .themeToggleBtn:hover ,
+:global(body.dark-theme) .themeToggleBtn:hover ,
+:global(body.oled-theme) .themeToggleBtn:hover ,
+.dark .themeToggleBtn:hover {
     background: rgba(40, 40, 40, 0.8);
     transform: rotate(360deg) scale(1.05);
 }
@@ -244,7 +265,10 @@
     font-weight: 500;
 }
 
-:global(body.dark-mode) .inputBox:focus {
+:global(body.dark-mode) .inputBox:focus ,
+:global(body.dark-theme) .inputBox:focus ,
+:global(body.oled-theme) .inputBox:focus ,
+.dark .inputBox:focus {
     border-color: #60A5FA;
 }
 
@@ -258,7 +282,10 @@
     user-select: none;
 }
 
-:global(body.dark-mode) .getOtpBtn {
+:global(body.dark-mode) .getOtpBtn ,
+:global(body.dark-theme) .getOtpBtn ,
+:global(body.oled-theme) .getOtpBtn ,
+.dark .getOtpBtn {
     color: #60A5FA;
 }
 
@@ -287,10 +314,16 @@
     box-shadow: 0 10px 20px var(--shadow-color);
 }
 
-:global(body.dark-mode) .loginBtn {
+:global(body.dark-mode) .loginBtn ,
+:global(body.dark-theme) .loginBtn ,
+:global(body.oled-theme) .loginBtn ,
+.dark .loginBtn {
     background-color: #6900f3;
 }
-:global(body.dark-mode) .loginBtn:hover {
+:global(body.dark-mode) .loginBtn:hover ,
+:global(body.dark-theme) .loginBtn:hover ,
+:global(body.oled-theme) .loginBtn:hover ,
+.dark .loginBtn:hover {
     background-color: #8222ff;
 }
 
@@ -314,7 +347,10 @@
     margin-left: 4px;
 }
 
-:global(body.dark-mode) .loginRedirect a {
+:global(body.dark-mode) .loginRedirect a ,
+:global(body.dark-theme) .loginRedirect a ,
+:global(body.oled-theme) .loginRedirect a ,
+.dark .loginRedirect a {
     color: #60A5FA;
 }
 

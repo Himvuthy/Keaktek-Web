@@ -11,29 +11,41 @@ import loginBgLight from '../assets/login-bg.png';
 import loginBgDark from '../assets/login-bg-dark.png';
 
 export default function Register() {
-    const [isDark, setIsDark] = useState(false);
+    const [isDark, setIsDark] = useState(() => {
+        const savedTheme = localStorage.getItem('studyapp-theme');
+        if (savedTheme) {
+            const lower = savedTheme.toLowerCase();
+            return lower === 'dark' || lower === 'oled';
+        }
+        return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    });
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { login } = useAuth();
 
-    // Check saved theme
+    // Sync theme on mount and watch changes
     useEffect(() => {
-        const savedTheme = localStorage.getItem('studyapp-theme');
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-            setIsDark(true);
+        if (isDark) {
+            document.body.classList.add('dark-mode', 'dark-theme');
+            document.body.classList.remove('light-mode');
+        } else {
+            document.body.classList.remove('dark-mode', 'dark-theme', 'oled-theme');
+            document.body.classList.add('light-mode');
         }
-    }, []);
+    }, [isDark]);
 
     const toggleTheme = () => {
-        const newIsDark = !isDark;
-        setIsDark(newIsDark);
-        if (newIsDark) {
-            document.body.classList.add('dark-mode');
+        const nextDark = !isDark;
+        setIsDark(nextDark);
+        if (nextDark) {
+            document.body.classList.add('dark-mode', 'dark-theme');
+            document.body.classList.remove('light-mode');
+            localStorage.setItem('studyapp-theme', 'dark');
         } else {
-            document.body.classList.remove('dark-mode');
+            document.body.classList.remove('dark-mode', 'dark-theme', 'oled-theme');
+            document.body.classList.add('light-mode');
+            localStorage.setItem('studyapp-theme', 'light');
         }
-        localStorage.setItem('studyapp-theme', newIsDark ? 'dark' : 'light');
     };
 
 
@@ -114,7 +126,7 @@ export default function Register() {
     const moonPath = <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>;
 
     return (
-        <div className={styles.registerWrapper}>
+        <div className={`${styles.registerWrapper} ${isDark ? styles.dark : ''}`}>
             <StudyBackground isDark={isDark} />
             <div className={styles.websiteCanvas}>
                 
