@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useGoogleLogin } from '@react-oauth/google';
+import { supabase } from '../supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import StudyBackground from '../components/StudyBackground';
 import WaveBackground from '../components/WaveBackground';
@@ -38,35 +38,18 @@ export default function Register() {
 
 
 
-    const loginWithGoogle = useGoogleLogin({
-        onSuccess: async (tokenResponse) => {
-            try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/google`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: tokenResponse.access_token }),
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    setError(data.error || 'Google login failed.');
-                    return;
-                }
-
-                login(data.user, data.token);
-                if (!data.user.birthYear || !data.user.grade) {
-                    navigate('/profile-setup');
-                } else {
-                    navigate('/dashboard');
-                }
-            } catch (err) {
-                console.error('Google login error:', err);
-                setError('An error occurred during Google login.');
-            }
-        },
-        onError: () => setError('Google Login Failed')
-    });
+    const loginWithGoogle = async () => {
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: window.location.origin + import.meta.env.BASE_URL + 'login' },
+            });
+            if (error) setError(error.message || 'Google login failed.');
+        } catch (err) {
+            console.error('Google login error:', err);
+            setError('An error occurred during Google login.');
+        }
+    };
 
     useEffect(() => {
         window.fbAsyncInit = function() {

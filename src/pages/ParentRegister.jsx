@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useGoogleLogin } from '@react-oauth/google';
+import { supabase } from '../supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import StudyBackground from '../components/StudyBackground';
 import WaveBackground from '../components/WaveBackground';
@@ -36,31 +36,18 @@ export default function ParentRegister() {
         localStorage.setItem('studyapp-theme', newIsDark ? 'dark' : 'light');
     };
 
-    const loginWithGoogle = useGoogleLogin({
-        onSuccess: async (tokenResponse) => {
-            try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/google`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: tokenResponse.access_token, roleName: 'Parent' }),
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    setError(data.error || 'Google login failed.');
-                    return;
-                }
-
-                login(data.user, data.token);
-                navigate('/dashboard');
-            } catch (err) {
-                console.error('Google login error:', err);
-                setError('An error occurred during Google login.');
-            }
-        },
-        onError: () => setError('Google Login Failed')
-    });
+    const loginWithGoogle = async () => {
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: window.location.origin + import.meta.env.BASE_URL + 'login' },
+            });
+            if (error) setError(error.message || 'Google login failed.');
+        } catch (err) {
+            console.error('Google login error:', err);
+            setError('An error occurred during Google login.');
+        }
+    };
 
     const sunPath = <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41M12 7a5 5 0 100 10 5 5 0 000-10z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>;
     const moonPath = <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>;

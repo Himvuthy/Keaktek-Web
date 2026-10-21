@@ -13,9 +13,7 @@ export function AuthProvider({ children }) {
         // Screens expect `role` (legacy API shape), getMe() returns `roleName`.
         const toLegacyUser = ({ roleName, ...rest }) => ({ ...rest, role: roleName });
 
-        async function checkSession() {
-            const { data: { session } } = await supabase.auth.getSession();
-
+        async function loadProfile(session) {
             if (!session) {
                 localStorage.removeItem('studyapp_token');
                 localStorage.removeItem('studyapp_user');
@@ -46,7 +44,20 @@ export function AuthProvider({ children }) {
             }
             setLoading(false);
         }
-        checkSession();
+
+        // Check current session on mount
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            loadProfile(session);
+        });
+
+        // Listen for auth state changes (e.g. OAuth redirects / SIGNED_IN)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            loadProfile(session);
+        });
+
+        return () => {
+            subscription?.unsubscribe();
+        };
     }, []);
 
     const login = (userData, jwtToken) => {
