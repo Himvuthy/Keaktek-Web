@@ -12,6 +12,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import StudyBackground from '../components/StudyBackground';
 import ContentTab from '../components/ContentTab';
 import Skeleton from '../components/Skeleton';
+import KeaktekAIChat, { GeminiSparkleIcon } from '../components/KeaktekAIChat';
 export default function AdminDashboard() {
     const getAvatarUrl = (url) => {
         if (!url) return import.meta.env.BASE_URL + 'avatars/avatar-1.svg';
@@ -41,6 +42,7 @@ export default function AdminDashboard() {
     const { token, user, logout } = useAuth();
     const navigate = useNavigate();
     const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+    const [isAIChatOpen, setIsAIChatOpen] = useState(false);
     const [invitations, setInvitations] = useState([]);
     const [users, setUsers] = useState([]);
     const [dashboardStats, setDashboardStats] = useState(null);
@@ -2283,6 +2285,15 @@ useEffect(() => {
                                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                             </div>
                         </div>
+                        <button
+                            type="button"
+                            className={`${styles.iconBtn} ${styles.tooltip} ${styles.tooltipBottom}`}
+                            data-tooltip="Keaktek AI"
+                            onClick={() => setIsAIChatOpen(prev => !prev)}
+                            style={isAIChatOpen ? { borderColor: '#8b5cf6', color: '#a78bfa', boxShadow: '0 0 14px rgba(139, 92, 246, 0.35)' } : undefined}
+                        >
+                            <GeminiSparkleIcon size={20} />
+                        </button>
                         <div style={{ position: 'relative' }}>
                             <button className={`${styles.iconBtn} ${styles.tooltip} ${styles.tooltipBottom}`} data-tooltip="Notifications" onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}>
                                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
@@ -2434,6 +2445,7 @@ useEffect(() => {
                         </div>
                     </div>
                 )}
+                            <KeaktekAIChat isOpen={isAIChatOpen} onClose={() => setIsAIChatOpen(false)} user={user} />
             </main>
         </div>
     );
