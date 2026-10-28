@@ -52,9 +52,10 @@ export default function Register() {
 
     const loginWithGoogle = async () => {
         try {
+            const redirectUrl = window.location.origin + import.meta.env.BASE_URL;
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
-                options: { redirectTo: window.location.origin + import.meta.env.BASE_URL + 'login' },
+                options: { redirectTo: redirectUrl },
             });
             if (error) setError(error.message || 'Google login failed.');
         } catch (err) {

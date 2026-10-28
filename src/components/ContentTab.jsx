@@ -172,14 +172,21 @@ export default function ContentTab({ activeTab, isSwitching }) {
         }
     };
 
-    const filteredContents = contents.filter(c => {
-        if (filter === 'All') return true;
-        if (filter === 'Placement') return !!c.is_placement;
-        if (filter === 'Lesson' || filter === 'Quiz') return c.type === filter;
-        if (filter === 'Published') return c.ispublished === true;
-        if (filter === 'Unpublished') return c.ispublished === false;
-        return true;
-    });
+    const isPlacementItem = (c) => Boolean(
+        c.is_placement ||
+        c.isPlacement ||
+        (c.title && c.title.toLowerCase().includes('placement'))
+    );
+
+    const filteredContents = contents
+        .filter(c => !isPlacementItem(c))
+        .filter(c => {
+            if (filter === 'All') return true;
+            if (filter === 'Lesson' || filter === 'Quiz') return c.type === filter;
+            if (filter === 'Published') return c.ispublished === true;
+            if (filter === 'Unpublished') return c.ispublished === false;
+            return true;
+        });
 
     const placementSubjects = ['All', ...Array.from(new Set(placementQuestions.map(q => q.subjectname).filter(Boolean)))];
     const filteredPlacementQuestions = placementQuestions.filter(q => {
@@ -250,7 +257,7 @@ export default function ContentTab({ activeTab, isSwitching }) {
                             </button>
                             <div className={`${styles.filterPopup} ${styles.glassPanel} ${isFilterPopupOpen ? styles.show : ''}`}>
                                 <h4 style={{ margin: '0 0 10px 0', fontSize: '13px', color: '#888' }}>Filter Content</h4>
-                                {['All', 'Lesson', 'Quiz', 'Placement', 'Published', 'Unpublished'].map(t => (
+                                {['All', 'Lesson', 'Quiz', 'Published', 'Unpublished'].map(t => (
                                     <div key={t} className={styles.popupItem} onClick={() => { setFilter(t); setIsFilterPopupOpen(false); }}>
                                         <span style={{ fontWeight: filter === t ? 'bold' : 'normal' }}>{t}</span>
                                         {filter === t && <svg viewBox="0 0 24 24" width="14" height="14" stroke="#10b981" fill="none" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>}
@@ -260,7 +267,6 @@ export default function ContentTab({ activeTab, isSwitching }) {
                         </div>
                         <button className={styles.viewAllBtn} onClick={() => { setEditingItem(null); setIsLessonModalOpen(true); }}>New Lesson</button>
                         <button className={styles.viewAllBtn} onClick={() => { setEditingItem(null); setIsQuizModalOpen(true); }} style={{ background: '#3b82f6' }}>New Quiz</button>
-                        <button className={styles.viewAllBtn} onClick={() => { setEditingPlacementQuestion(null); setIsPlacementQuestionModalOpen(true); }} style={{ background: '#8b5cf6' }}>+ Placement Question</button>
                     </div>
                 ) : (
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
